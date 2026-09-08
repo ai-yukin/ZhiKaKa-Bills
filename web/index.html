@@ -1,0 +1,3166 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="QP56oCzKX0fhIK79DMR9B4">
+<head data-page-node-id="9VM6gu95GxYMG4j5rNIeEx">
+<meta charset="UTF-8" data-page-node-id="NLaBLkBcILdLUbLhMLThSl">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="DN1abNELvDUQFFTMepT0iu">
+<title>知卡卡账单</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F5F6FA;--card:#fff;--primary:#2563EB;--primary-light:#EFF6FF;
+  --text:#1E293B;--text2:#64748B;--text3:#94A3B8;
+  --border:#E2E8F0;--red:#EF4444;--green:#22C55E;--amber:#F59E0B;--orange:#F97316;
+  --shadow:0 1px 4px rgba(0,0,0,.08);--radius:12px;--radius-sm:8px;
+  --font-xs:11px;--font-sm:12px;--font-base:13px;--font-md:14px;
+  --font-lg:16px;--font-xl:18px;--font-2xl:20px;--font-3xl:26px;--font-4xl:28px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);color:var(--text);height:100%;overflow:hidden;font-size:14px;}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+#app{height:100%;display:flex;flex-direction:column;max-width:520px;margin:0 auto;background:var(--bg);position:relative}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 10px;height:54px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:100}
+.logo{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:var(--primary)}
+.logo-icon{width:28px;height:28px;background:var(--primary);border-radius:8px;display:flex;
+  align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800}
+.top-actions{display:flex;align-items:center;gap:1px}
+.top-btn{background:none;border:none;cursor:pointer;padding:5px 6px;border-radius:8px;
+  color:var(--text2);display:flex;flex-direction:column;align-items:center;gap:1px;
+  font-size:10px;transition:all .15s;position:relative;min-width:40px}
+.top-btn:hover{background:var(--primary-light);color:var(--primary)}
+.top-btn svg{width:20px;height:20px}
+.top-btn .label{margin-top:1px}
+.badge{position:absolute;top:2px;right:4px;width:7px;height:7px;background:var(--red);
+  border-radius:50%;border:1.5px solid #fff;display:none}
+.badge.show{display:block}
+.main{flex:1;overflow-y:auto;padding:12px;scroll-behavior:smooth}
+.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.summary-card{background:var(--card);border-radius:var(--radius);padding:8px;
+  box-shadow:var(--shadow);cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.summary-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.sc-label{font-size:var(--font-xs);color:var(--text2);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px}
+.sc-value{font-size:var(--font-2xl);font-weight:700;color:var(--text);letter-spacing:-.5px}
+.sc-sub{font-size:var(--font-xs);color:var(--text3);margin-top:4px;line-height:1.4}
+.best-card{display:flex;align-items:center;gap:8px;margin-top:6px}
+.bank-mini-logo{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.best-card-text{font-size:12px;font-weight:600;color:var(--text)}
+.section-title{font-size:13px;font-weight:600;color:var(--text2);margin:16px 0 8px;
+  display:flex;align-items:center;justify-content:space-between}
+.section-title span{font-size:11px;color:var(--text3);font-weight:400}
+.bill-list{display:flex;flex-direction:column;gap:8px;padding-bottom:20px}
+.bill-item{background:var(--card);border-radius:var(--radius);padding:14px 16px;
+  box-shadow:var(--shadow);cursor:pointer;
+  transition:box-shadow .15s;position:relative;margin-bottom:10px}
+.bill-item:hover{box-shadow:0 3px 10px rgba(0,0,0,.1)}
+.bill-item.paid{opacity:.7}
+.bill-item.paid .bill-item-amount{text-decoration:line-through;color:var(--text3)}
+.bill-delete-x{position:absolute;top:8px;right:10px;width:24px;height:24px;border-radius:50%;
+  background:#f5f5f5;border:none;cursor:pointer;color:#bbb;font-size:14px;
+  display:flex;align-items:center;justify-content:center;line-height:1;z-index:20;
+  transition:all .15s;padding:0;pointer-events:auto}
+.bill-delete-x:hover{color:var(--red);background:#FEE2E2}
+.bill-logo{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.bill-info{flex:1;min-width:0}
+.bill-header{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bill-name{font-size:15px;font-weight:600}
+.bill-card-no{font-size:11px;color:var(--text3);margin-left:2px}
+.bill-custom-tag{font-size:10px;color:var(--primary);background:var(--primary-light);padding:1px 5px;border-radius:4px}
+.bill-note-tag{font-size:10px;color:#fff;background:var(--orange);padding:2px 7px;border-radius:4px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;margin-right:3px}
+.bill-amount{font-size:14px;font-weight:700;margin-top:2px}
+.bill-amount.red{color:var(--red)}
+.bill-amount.green{color:var(--green)}
+.bill-amount.paid{color:var(--text3);text-decoration:line-through}
+.bill-due{font-size:11px;color:var(--text2);margin-top:3px;display:flex;align-items:center;gap:6px}
+.due-badge{font-size:10px;padding:1px 5px;border-radius:4px;font-weight:600}
+.due-badge.urgent{background:#FEE2E2;color:var(--red)}
+.due-badge.soon{background:#FEF3C7;color:var(--amber)}
+.due-badge.normal{background:var(--bg);color:var(--text3)}
+.due-badge.paid{background:#DCFCE7;color:var(--green)}
+.bill-action{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:56px}
+/* New bill item layout */
+.bill-item-row1{display:flex;align-items:center;gap:8px;min-width:0;flex:1;padding-right:28px}
+.bill-item-row2{display:flex;align-items:center;gap:8px;margin-top:10px}
+.bill-item-amount{font-size:18px;font-weight:700;color:var(--red);flex-shrink:0;white-space:nowrap}
+.bill-item-amount.paid{color:var(--text3);text-decoration:line-through;font-size:13px}
+.bill-item-due{flex:1;text-align:center;min-width:0}
+.bill-item-due{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}
+.bill-item-due-main{display:flex;align-items:baseline;gap:4px}
+.bill-item-due-num{font-size:32px;font-weight:800;color:var(--text);line-height:1}
+.bill-item-due-num.urgent{color:var(--red)}
+.bill-item-due-label{font-size:12px;color:var(--text2);white-space:nowrap}
+.bill-item-due-label.urgent{color:var(--red)}
+.bill-item-due-date{font-size:12px;color:var(--text3);margin-top:2px}
+.action-btn{font-size:11px;padding:5px 10px;border-radius:6px;border:none;cursor:pointer;
+  font-weight:600;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#1D4ED8}
+.btn-outline{background:#fff;border:1px solid var(--border);color:var(--text2)}
+.btn-outline:hover{background:var(--bg)}
+.btn-green{background:var(--green);color:#fff}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-state svg{width:64px;height:64px;margin-bottom:12px;opacity:.4}
+.empty-state p{font-size:13px}
+.page-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;opacity:0;
+  pointer-events:none;transition:opacity .3s}
+.page-overlay.show{opacity:1;pointer-events:auto}
+.page-panel{position:fixed;top:0;right:0;width:100%;max-width:520px;height:100%;
+  background:var(--bg);z-index:210;transform:translateX(100%);transition:transform .3s ease;
+  display:flex;flex-direction:column}
+.page-panel.show{transform:translateX(0)}
+.page-header{height:54px;background:var(--card);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+.page-header h2{font-size:16px;font-weight:600;flex:1}
+.back-btn{background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);
+  display:flex;align-items:center}
+.back-btn svg{width:22px;height:22px}
+.page-body{flex:1;overflow-y:auto;padding:16px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-label .required{color:var(--red);margin-left:2px}
+.form-input,.form-select{width:100%;padding:10px 12px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px;background:var(--card);color:var(--text);
+  transition:border-color .15s}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary)}
+.form-input::placeholder{color:var(--text3)}
+.form-hint{font-size:11px;color:var(--text3);margin-top:4px}
+.radio-group{display:flex;flex-direction:column;gap:8px}
+.radio-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all .15s}
+.radio-item:hover{border-color:var(--primary)}
+.radio-item.active{border-color:var(--primary);background:var(--primary-light)}
+.radio-item input[type="radio"]{width:16px;height:16px;accent-color:var(--primary);flex-shrink:0}
+.radio-item label{cursor:pointer;font-size:13px;flex:1}
+.photo-upload{display:flex;gap:12px}
+.photo-box{flex:1;aspect-ratio:1.6;border:2px dashed var(--border);border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;
+  transition:all .15s;position:relative;overflow:hidden;background:var(--card)}
+.photo-box:hover{border-color:var(--primary)}
+.photo-box.has-image{border-style:solid;border-color:var(--primary)}
+.photo-box img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}
+.photo-box .placeholder{text-align:center;color:var(--text3);font-size:12px}
+.photo-box .placeholder svg{width:28px;height:28px;margin-bottom:4px;opacity:.5}
+.photo-input{display:none}
+.wallet-card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;cursor:pointer;
+  transition:transform .15s}
+.wallet-card:hover{transform:translateX(2px)}
+.wallet-card-logo{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.wallet-card-info{flex:1;min-width:0}
+.wallet-card-name{font-size:14px;font-weight:600}
+.wallet-card-detail{font-size:11px;color:var(--text3);margin-top:2px}
+.wallet-card-action{color:var(--text3);padding:4px}
+.wallet-card-note{font-size:11px;color:var(--amber);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wallet-summary{padding:12px 16px;border-top:1px solid var(--border);background:var(--card);
+  font-size:13px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.wallet-summary-count{color:var(--text2)}
+.wallet-summary-total{font-weight:700;color:var(--text)}
+.card-detail-photo{width:100%;aspect-ratio:1.6;border-radius:var(--radius);object-fit:contain;
+  margin-bottom:12px;background:var(--bg)}
+.card-detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.card-detail-row:last-child{border-bottom:none}
+.card-detail-label{color:var(--text3);font-size:13px}
+.card-detail-value{font-weight:600;font-size:13px}
+.msg-item{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow);cursor:pointer;transition:all .15s;position:relative}
+.msg-item:hover{background:var(--primary-light)}
+.msg-item.unread{border-left:3px solid var(--primary)}
+.msg-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.msg-title.unread::before{content:'';display:inline-block;width:6px;height:6px;background:var(--red);
+  border-radius:50%;margin-right:6px;vertical-align:middle}
+.msg-content{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:6px}
+.msg-time{font-size:11px;color:var(--text3)}
+.af-card{background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow);cursor:pointer;transition:transform .1s}
+.af-card:active{transform:scale(.995)}
+.af-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.af-bank-logo{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.af-bank-name{font-size:14px;font-weight:600}
+.af-card-no{font-size:11px;color:var(--text3)}
+.af-rule{font-size:12px;color:var(--text2);margin-bottom:8px;line-height:1.5}
+.af-progress-bg{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.af-progress-bar{height:100%;background:var(--primary);border-radius:4px;transition:width .5s}
+.af-progress-bar.unconfirmed{background:var(--text3)}
+.af-progress-text{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px}
+.af-status{font-size:12px;font-weight:600;margin-top:6px}
+.af-status.ok{color:var(--green)}
+.af-status.warn{color:var(--amber)}
+.af-status.no{color:var(--red)}
+.af-section-title{font-size:13px;font-weight:600;color:var(--text2);margin:16px 0 8px;padding:0 4px}
+.af-section-title:first-child{margin-top:0}
+.fee-input{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  font-size:14px;outline:none;box-sizing:border-box;margin-top:8px}
+.fee-input:focus{border-color:var(--primary)}
+.if-list{display:flex;flex-direction:column;gap:8px}
+.if-item{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:12px}
+.if-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:12px;font-weight:700;color:#fff;background:var(--primary)}
+.if-rank.gold{background:var(--amber)}
+.if-rank.silver{background:var(--text3)}
+.if-info{flex:1}
+.if-bank{font-size:14px;font-weight:600}
+.if-detail{font-size:12px;color:var(--text2);margin-top:2px}
+.if-days{text-align:right}
+.if-days-num{font-size:20px;font-weight:700;color:var(--primary)}
+.if-days-label{font-size:11px;color:var(--text3)}
+.rd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.rd-card{background:var(--card);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.rd-card-label{font-size:11px;color:var(--text2);margin-bottom:6px}
+.rd-card-value{font-size:20px;font-weight:700}
+.rd-card-value.red{color:var(--red)}
+.rd-card-value.green{color:var(--green)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;
+  align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-content{background:var(--card);border-radius:var(--radius);width:100%;max-width:360px;
+  max-height:80vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.modal-header{padding:16px 16px 0;font-size:16px;font-weight:600}
+.modal-body{padding:16px}
+.modal-footer{padding:0 16px 16px;display:flex;gap:8px;justify-content:flex-end}
+.modal-btn{padding:8px 16px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-size:13px;font-weight:600}
+.modal-btn.primary{background:var(--primary);color:#fff}
+.modal-btn.secondary{background:var(--bg);color:var(--text2)}
+.repay-options{display:flex;flex-direction:column;gap:8px}
+.repay-option{padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.repay-option:hover{border-color:var(--primary)}
+.repay-option.active{border-color:var(--primary);background:var(--primary-light)}
+.repay-option input{width:16px;height:16px;accent-color:var(--primary)}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;
+  border-bottom:1px solid var(--border)}
+.setting-label{font-size:14px}
+.setting-desc{font-size:11px;color:var(--text3);margin-top:2px}
+.toggle{width:44px;height:24px;background:var(--border);border-radius:12px;position:relative;
+  cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--primary)}
+.toggle::after{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;
+  top:2px;left:2px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on::after{transform:translateX(20px)}
+.time-input{display:flex;align-items:center;gap:4px}
+.time-input input{width:50px;text-align:center;padding:8px;border:1px solid var(--border);
+  border-radius:var(--radius-sm);font-size:14px}
+.fold-header{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;
+  padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+.fold-header:hover{opacity:.8}
+.fold-arrow{transition:transform .2s;color:var(--text3)}
+.fold-header.open .fold-arrow{transform:rotate(180deg)}
+.bottom-btn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;
+  padding:12px 16px 20px;background:linear-gradient(transparent,var(--bg) 40%);z-index:50}
+.bottom-btn button{width:100%;padding:14px;border:none;border-radius:var(--radius);background:var(--primary);
+  color:#fff;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.bottom-btn button:hover{background:#1D4ED8}
+.bottom-btn button:disabled{background:var(--text3);cursor:not-allowed;box-shadow:none}
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:400;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.loading-overlay.hidden{display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);
+  border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--text2);font-size:14px}
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:var(--text);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);
+  font-size:13px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.delete-btn{color:var(--red);font-size:13px;margin-top:12px;background:none;border:none;cursor:pointer;padding:10px 0;width:100%;text-align:center;border-radius:var(--radius-sm)}
+.refresh-time{font-size:10px;color:var(--text3);text-align:center;margin-top:-8px;margin-bottom:8px}
+.fee-field-group{display:none}
+.fee-field-group.show{display:block}
+
+/* 录账页新表单样式 */
+.bill-form-card{background:var(--card);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden}
+.form-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);gap:12px}
+.form-row:last-child{border-bottom:none}
+.form-row-label{font-size:14px;color:var(--text);white-space:nowrap;flex-shrink:0}
+.form-row-input{border:none;background:none;text-align:right;font-size:14px;color:var(--text);outline:none;flex:1;min-width:0}
+.form-row-input::placeholder{color:var(--text3)}
+.form-row-value{font-size:14px;color:var(--text2);display:flex;align-items:center;gap:4px;cursor:pointer;flex:1;justify-content:flex-end}
+.form-row-value.placeholder{color:var(--text3)}
+.form-row-value svg{width:16px;height:16px;color:var(--text3)}
+.advanced-toggle{text-align:center;padding:12px;font-size:13px;color:var(--text3);cursor:pointer;background:var(--card);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;gap:4px}
+.advanced-toggle svg{width:14px;height:14px}
+.advanced-section{display:none}
+.advanced-section.show{display:block}
+
+/* 滚轮选择器 */
+.picker-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:350;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.picker-overlay.show{opacity:1;pointer-events:auto}
+.picker-panel{background:var(--card);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:520px;padding-bottom:env(safe-area-inset-bottom,0)}
+.picker-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.picker-title{font-size:15px;font-weight:600}
+.picker-btn{color:var(--primary);font-size:14px;background:none;border:none;cursor:pointer;font-weight:600}
+.picker-btn.cancel{color:var(--text3)}
+.picker-body{height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch;position:relative}
+.picker-item{text-align:center;padding:14px 0;font-size:15px;color:var(--text3);border-bottom:1px solid var(--border);cursor:pointer;transition:all .15s}
+.picker-item:last-child{border-bottom:none}
+.picker-item.selected{color:var(--text);font-weight:600;background:var(--primary-light)}
+
+/* 单选标签 */
+.type-tabs{display:flex;background:var(--card);border-radius:var(--radius);padding:4px;margin-bottom:12px;box-shadow:var(--shadow)}
+.type-tab{flex:1;text-align:center;padding:10px 0;font-size:14px;border-radius:8px;cursor:pointer;transition:all .15s;color:var(--text2)}
+.type-tab.active{background:var(--primary);color:#fff;font-weight:600}
+
+@media(min-width:521px){
+  #app{box-shadow:0 0 20px rgba(0,0,0,.08)}
+  body{background:#E8EAF0}
+}
+
+@media(max-width:360px){
+  .summary-row{grid-template-columns:1fr;gap:8px}
+  .summary-card{padding:6px}
+  .sc-value{font-size:17px}
+  .sc-label{font-size:10px}
+  .top-btn{padding:4px 5px;min-width:34px;font-size:9px;gap:0}
+  .top-btn svg{width:18px;height:18px}
+  .top-btn .label{font-size:9px}
+  .main{padding:10px}
+  .logo{font-size:13px}
+  .topbar{padding:0 6px;height:50px}
+  .bill-item{padding:11px 12px}
+  .bill-item-due-num{font-size:24px}
+  .bill-item-amount{font-size:16px}
+}
+</style>
+</head>
+<body data-page-node-id="suNM3kmFv0nL4CSbAazGP8">
+<div id="app" data-page-node-id="oi6BzDJMVEinmFe6RIVnRC">
+  <div id="loading" class="loading-overlay hidden" data-page-node-id="GLKBMJ4sFRUCIoenFRJFxd">
+    <div class="spinner" data-page-node-id="oledPV3nb3KK9nUKBBxv5Z"></div>
+    <div class="loading-text" data-page-node-id="VMHjf1U230ODB5MGj83wve">正在处理...</div>
+  </div>
+  <div id="toast" class="toast" data-page-node-id="KGwKD1e2yFihSo3XeOtBa5"></div>
+
+  <!-- Top Bar -->
+  <div class="topbar" data-page-node-id="DtQeKDsU9iLHtLkZgZlgoJ">
+    <div class="logo" data-page-node-id="aOdBlGvP0BwA9vsOCWZNQK">
+      <div class="logo-icon" data-page-node-id="rAB1kd3Vmw8LMvwqDBdDWG">知</div>
+      <span data-page-node-id="UVW55wwhaMmr2g1BteD5i5">知卡卡账单</span>
+    </div>
+    <div class="top-actions" data-page-node-id="0kTalCxEp4tGPA7IhaLDnu"><button class="top-btn" id="btnWallet" title="卡包" data-page-node-id="vis5SRpN11UmEWnDK1f8yD">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="KYquCcAgJizxXSF3xrL7ep"><path d="M799.488 900.448 159.936 900.448c-52.928 0-96-43.072-96-96L63.936 225.952c0-52.928 43.072-96 96-96l642.496 0c52.928 0 96 43.072 96 96L898.432 320c0 17.664-14.304 32-32 32s-32-14.336-32-32L834.432 225.952c0-17.632-14.336-32-32-32L159.936 193.952c-17.632 0-32 14.368-32 32l0 578.496c0 17.664 14.368 32 32 32l639.552 0c17.664 0 32-14.336 32-32l0-98.944c0-17.696 14.304-32 32-32s32 14.304 32 32l0 98.944C895.488 857.376 852.448 900.448 799.488 900.448z" fill="currentColor" data-page-node-id="HFiCN08fT9F7PFPSrHXBIw"/><path d="M661.472 514.112m-31.328 0a0.979 0.979 0 1 0 62.656 0 0.979 0.979 0 1 0-62.656 0Z" fill="currentColor" data-page-node-id="5KyRHXgJUzam7oZGDOIwbu"/><path d="M896 640 576 640c-35.296 0-64-28.704-64-64l0-128c0-35.296 28.704-64 64-64l320 0c35.296 0 64 28.704 64 64l0 128C960 611.296 931.296 640 896 640zM576 448l0 128 320.064 0L896 448 576 448z" fill="currentColor" data-page-node-id="aM0uhkFykaJDAEPxAlxOIq"/></svg>
+        <span class="label" data-page-node-id="oBqeJ1qI7Qg5E8IbxG5Y1D">卡包</span>
+      </button><button class="top-btn" id="btnManualBill" title="录账" data-page-node-id="kgVyXodWmDyCTeI4BJskFk">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="hYEnrXXHo2EmiFGK73Hq53"><path d="M800 960 224 960c-52.928 0-96-43.072-96-96L128 224c0-52.928 43.072-96 96-96l448 0c17.696 0 32 14.336 32 32s-14.304 32-32 32L224 192C206.368 192 192 206.368 192 224l0 640c0 17.664 14.368 32 32 32l576 0c17.664 0 32-14.336 32-32L832 352c0-17.664 14.304-32 32-32s32 14.336 32 32l0 512C896 916.928 852.928 960 800 960z" fill="currentColor" data-page-node-id="8dzWOgdVKSQVUlCGkDLXH3"/><path d="M612 448c-8.192 0-16.384-3.136-22.624-9.376-12.512-12.512-12.512-32.736 0-45.248l318.016-318.016c12.512-12.512 32.736-12.512 45.248 0s12.512 32.736 0 45.248l-318.016 318.016C628.384 444.896 620.192 448 612 448z" fill="currentColor" data-page-node-id="FHEiekkMAsViQkDTR6dGRz"/><path d="M480 448 288 448c-17.664 0-32-14.336-32-32s14.336-32 32-32l192 0c17.664 0 32 14.336 32 32S497.664 448 480 448z" fill="currentColor" data-page-node-id="U7gXZ5sVf0V4x4bb94RMkQ"/><path d="M672 640 288 640c-17.664 0-32-14.304-32-32s14.336-32 32-32l384 0c17.696 0 32 14.304 32 32S689.696 640 672 640z" fill="currentColor" data-page-node-id="HWjB0yezgEE3C9hs9owbOQ"/></svg>
+        <span class="label" data-page-node-id="NKjT2idDti0tadyCnuaxVY">录账</span>
+      </button><button class="top-btn" id="btnAnnual" title="年费" data-page-node-id="sQ7bd5q4Id5zutwvSjsreu">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="H0tD0LPqQ6SSFV7VAyZynt"><path d="M512 64C264.96 64 64 264.96 64 512s200.96 448 448 448 448-200.96 448-448S759.04 64 512 64zM512 896C300.256 896 128 723.744 128 512 128 300.256 300.256 128 512 128c211.744 0 384 172.256 384 384C896 723.744 723.744 896 512 896z" fill="currentColor" data-page-node-id="4W7FA6cOuo5cHptzcpGFuX"/><path d="M641.088 512c17.696 0 32-14.336 32-32s-14.304-32-32-32L544 448l0-15.136 118.592-123.872c12.192-12.8 12-33.056-0.8-45.248-12.736-12.16-32.832-11.712-45.088 1.12l-101.6 106.784-107.584-107.36c-12.544-12.512-32.768-12.448-45.248 0.064-12.48 12.512-13.088 32.768-0.576 45.248L480 428.224 480 448l-94.784 0c-17.664 0-32 14.336-32 32s14.336 32 32 32L480 512l0 64-94.784 0c-17.664 0-32 14.304-32 32s14.336 32 32 32L480 640l0 95.136c0 17.696 14.336 32 32 32s32-14.304 32-32L544 640l97.088 0c17.696 0 32-14.304 32-32s-14.304-32-32-32L544 576l0-64L641.088 512z" fill="currentColor" data-page-node-id="3jFecJEsVvCBpjnHDf4Aoo"/></svg>
+        <span class="label" data-page-node-id="aWgb6Od73wGd9W9dgRQ3v6">年费</span>
+      </button><button class="top-btn" id="btnRefresh" title="刷新" data-page-node-id="nGxweRzBXeMePXecaHlvbF">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="H1AMk46DRPBxjG7aVBPaUB"><path d="M939.456 256.224c-16.672-5.984-34.976 2.72-40.896 19.36l-24.768 69.344c-28.992-65.312-74.784-122.72-133.088-165.92C555.328 41.728 291.296 79.232 152.32 262.656c-67.264 88.768-95.616 198.176-79.84 308.032 15.84 110.304 74.208 207.776 164.352 274.496 75.424 55.808 163.808 82.752 251.456 82.752 128.032 0 254.56-57.44 336.992-166.272 36.48-48.128 61.472-102.08 74.208-160.416 3.776-17.248-7.136-34.304-24.416-38.08-17.216-3.712-34.304 7.104-38.08 24.416-10.784 49.184-31.872 94.752-62.72 135.456-117.888 155.52-341.92 187.232-499.392 70.72-76.288-56.48-125.664-138.912-139.072-232.16-13.344-92.8 10.656-185.248 67.488-260.288 117.856-155.584 341.792-187.424 499.328-70.848 57.024 42.24 99.84 100.608 122.976 166.624l-109.984-42.944c-16.416-6.368-35.008 1.696-41.44 18.176-6.432 16.48 1.728 35.008 18.176 41.44l161.856 63.2c3.808 1.472 7.744 2.208 11.616 2.208 0.544 0 1.024-0.192 1.568-0.224 1.216 0.128 2.432 0.64 3.648 0.64 13.12 0 25.472-8.16 30.112-21.248l57.632-161.184C964.768 280.48 956.096 262.144 939.456 256.224z" fill="currentColor" data-page-node-id="TeOfjGkEwUBbmpH4Hn1ELV"/></svg>
+        <span class="label" data-page-node-id="WEDGMmHh3py74IRocvQqzg">刷新</span>
+      </button><button class="top-btn" id="btnMessages" title="消息" data-page-node-id="N7MySPWwnJXYPwdHxRkOB2">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="gOqbENi5r9FauI6i8J3of0"><path d="M512 928c-8.192 0-16.384-3.136-22.624-9.376l-96-96c-12.512-12.512-12.512-32.736 0-45.248s32.736-12.512 45.248 0L512 850.752l73.376-73.376C591.36 771.36 599.488 768 608 768l224 0c17.664 0 32-14.336 32-32L864 224c0-17.632-14.336-32-32-32L192 192C174.368 192 160 206.368 160 224l0 512c0 17.664 14.368 32 32 32l96 0c17.664 0 32 14.304 32 32s-14.336 32-32 32L192 832c-52.928 0-96-43.072-96-96L96 224c0-52.928 43.072-96 96-96l640 0c52.928 0 96 43.072 96 96l0 512c0 52.928-43.072 96-96 96l-210.752 0-86.624 86.624C528.384 924.864 520.192 928 512 928z" fill="currentColor" data-page-node-id="MXHrJzYiiBHPNtgT9EN7Ds"/><path d="M336 512C309.536 512 288 490.464 288 464S309.536 416 336 416s48 21.536 48 48S362.464 512 336 512z" fill="currentColor" data-page-node-id="61INCKu9P45X4GjkcjxBKW"/><path d="M528 512c-26.464 0-48-21.536-48-48s21.536-48 48-48 48 21.536 48 48S554.464 512 528 512z" fill="currentColor" data-page-node-id="suMghD3AqeG6pGlcTG1DRp"/><path d="M720 512c-26.464 0-48-21.536-48-48s21.536-48 48-48 48 21.536 48 48S746.464 512 720 512z" fill="currentColor" data-page-node-id="uJ83slb6kYFIXQnKrywaF5"/></svg>
+        <span class="badge" id="msgBadge" data-page-node-id="Ii6E1sNjNnW87tZYDBnUbV"></span>
+        <span class="label" data-page-node-id="hLkx7TP8QJWmqM0RJJu84m">消息</span>
+      </button><button class="top-btn" id="btnSettings" title="设置" data-page-node-id="Y2VODQUEDLKUbU9IANWNKd">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" data-page-node-id="dJmnFoG1eeskhfax0PPwKP"><path d="M512 608c-52.928 0-96-43.072-96-96s43.072-96 96-96 96 43.072 96 96S564.928 608 512 608zM512 480c-17.632 0-32 14.368-32 32s14.368 32 32 32 32-14.368 32-32S529.632 480 512 480z" fill="currentColor" data-page-node-id="U99RNXzzKUdKsKajvLuCTt"/><path d="M631.04 960c-10.016 0-19.712-4.736-25.856-13.12l-73.408-100.48c-13.664 0.832-25.92 0.864-39.584 0l-73.376 100.48c-7.904 10.816-21.728 15.616-34.656 11.872-34.592-9.888-67.488-23.456-97.76-40.32-11.712-6.528-18.112-19.648-16.032-32.896l19.2-123.264c-9.824-8.704-19.136-18.016-27.84-27.808l-123.264 19.2c-13.056 1.984-26.336-4.352-32.896-16.064-16.896-30.368-30.464-63.296-40.32-97.824-3.68-12.864 1.056-26.72 11.904-34.624l100.448-73.376C177.152 524.96 176.928 518.4 176.928 512s0.224-12.96 0.672-19.776L77.12 418.816c-10.816-7.936-15.584-21.728-11.904-34.656 9.856-34.496 23.424-67.392 40.32-97.792 6.56-11.712 19.712-18.048 32.896-16.064l123.264 19.2c8.736-9.824 18.016-19.104 27.84-27.84l-19.2-123.264C268.288 125.184 274.72 112.064 286.432 105.536c30.4-16.896 63.296-30.464 97.76-40.32 12.928-3.648 26.72 1.056 34.656 11.904l73.376 100.448c13.568-0.896 25.824-0.896 39.584 0l73.408-100.48c7.904-10.848 21.664-15.52 34.656-11.904 34.464 9.856 67.328 23.424 97.76 40.32 11.712 6.528 18.112 19.648 16.064 32.896L734.432 261.76c9.824 8.736 19.104 18.016 27.808 27.776l123.328-19.2c13.152-2.016 26.336 4.384 32.864 16.032 16.896 30.4 30.496 63.296 40.352 97.824 3.648 12.896-1.088 26.688-11.904 34.624l-100.48 73.408c0.448 6.816 0.672 13.376 0.672 19.776s-0.224 12.96-0.672 19.776l100.48 73.376c10.816 7.904 15.552 21.728 11.904 34.624-9.856 34.496-23.424 67.424-40.352 97.824-6.528 11.712-19.488 18.048-32.896 16.064l-123.296-19.2c-8.672 9.76-17.984 19.072-27.808 27.776l19.232 123.296c2.048 13.248-4.352 26.368-16.064 32.896-30.24 16.832-63.136 30.4-97.76 40.32C636.928 959.584 633.984 960 631.04 960zM337.152 872.672c13.984 6.752 28.544 12.704 43.552 17.92l70.528-96.576c6.784-9.28 17.984-14.272 29.472-12.896 20.576 2.336 42.08 2.336 62.624 0 11.84-1.376 22.72 3.616 29.472 12.896l70.528 96.576c15.04-5.184 29.6-11.168 43.552-17.92l-18.432-118.368c-1.76-11.36 2.72-22.848 11.712-30.016 16.384-12.992 31.264-27.872 44.16-44.128 7.168-8.992 18.4-13.504 30.016-11.744l118.368 18.432c6.752-14.016 12.736-28.576 17.92-43.552l-96.576-70.528c-9.28-6.784-14.208-18.016-12.896-29.472 1.152-10.272 1.952-20.704 1.952-31.296s-0.768-21.024-1.952-31.296c-1.312-11.424 3.616-22.688 12.896-29.472l96.576-70.56c-5.152-15.008-11.168-29.568-17.92-43.552l-118.4 18.432c-11.328 1.696-22.816-2.688-29.984-11.744-12.896-16.256-27.776-31.104-44.16-44.128-8.992-7.168-13.472-18.592-11.712-29.984l18.432-118.4c-14.016-6.752-28.576-12.736-43.52-17.92l-70.56 96.576c-6.784 9.28-17.696 14.368-29.472 12.928-20.544-2.368-42.016-2.4-62.56 0-11.52 1.344-22.752-3.616-29.536-12.896l-70.528-96.576c-14.976 5.152-29.536 11.136-43.552 17.92l18.432 118.368c1.76 11.392-2.72 22.848-11.744 30.016-16.32 12.928-31.2 27.808-44.128 44.128-7.168 9.024-18.56 13.472-30.016 11.744l-118.368-18.432c-6.752 14.016-12.736 28.576-17.92 43.552l96.576 70.56c9.312 6.784 14.24 18.08 12.896 29.536C241.696 491.008 240.928 501.408 240.928 512s0.768 20.992 1.952 31.264c1.344 11.456-3.616 22.688-12.896 29.504l-96.576 70.528c5.184 15.008 11.168 29.568 17.92 43.552l118.368-18.432c11.392-1.76 22.848 2.752 30.016 11.744 12.896 16.32 27.744 31.168 44.128 44.128 9.024 7.168 13.504 18.624 11.744 30.016L337.152 872.672z" fill="currentColor" data-page-node-id="EolrDthLyWlHSAuv8vVEBz"/></svg>
+        <span class="label" data-page-node-id="90rKPKnI4N7SWGfw2kyh5o">设置</span>
+      </button></div>
+  </div>
+
+  <!-- Main -->
+  <div class="main" id="mainView" data-page-node-id="UexrukpEYmxfVh0g9r7weg">
+    <div class="refresh-time" id="lastRefresh" data-page-node-id="sMVrq6dT9GSiNXwEvpUhTK"></div>
+    <div id="onboardingHint" style="display:none;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:14px;padding:14px 16px 14px 16px;margin-bottom:12px;position:relative;box-shadow:0 2px 8px rgba(146,64,14,.08)">
+      <button id="onboardingClose" style="position:absolute;top:4px;right:8px;background:none;border:none;font-size:20px;color:#92400E;cursor:pointer;line-height:1;padding:4px 8px" aria-label="关闭">×</button>
+      <div style="font-size:14px;font-weight:600;color:#92400E;margin-bottom:8px">👋 欢迎使用 知卡卡账单</div>
+      <div style="font-size:12px;color:#78350F;line-height:1.85">
+        <div>1️⃣ 点 <b>卡包</b> → <b>+</b> 新增卡片（填账单日 + 还款规则）</div>
+        <div>2️⃣ 录卡后系统自动算还款日和免息期</div>
+        <div>3️⃣ 收到新账单后点 <b>刷新</b> 从邮箱拉取</div>
+      </div>
+    </div>
+    <div class="summary-row" data-page-node-id="sT6lhsytNGKcGlpqtk5ckJ">
+      <div class="summary-card" id="summaryRepay" data-page-node-id="tdF8uIjdMpi8QlrH7Qb95P">
+        <div class="sc-label" data-page-node-id="z7rweLFLN8DHLHzHkH85VG">今日距最后还款日</div>
+        <div id="bestRepayRow" style="display:flex;align-items:center;justify-content:center;margin-top:4px;white-space:nowrap;gap:8px" data-page-node-id="uZ6FvFWaGrbSUBztMG1cmg">
+          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0" data-page-node-id="PmOYIDY941EUI9kDMUzKBQ">
+            <div class="bank-mini-logo" id="bestRepayLogo" style="width:32px;height:32px;border-radius:8px;font-size:11px" data-page-node-id="FRbyRrYaPTTAQixvklCSxP">?</div>
+            <span class="best-card-text" id="bestRepayName" style="font-size:14px;font-weight:600;color:var(--text)" data-page-node-id="FNWAyAGXyOv8OFQPQy8Go2">请先录入卡片</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:2px;flex-shrink:0" data-page-node-id="JWNJIAgf4EOQhnrCtlGE6N">
+            <span class="sc-value" id="repayDaysNum" style="font-size:20px" data-page-node-id="jBanWbbZIuWHYKRB4HFjBu">--</span>
+            <span style="font-size:12px;color:var(--text);font-weight:400" data-page-node-id="u7396aKrbVngFjoBnaFzqv">天</span>
+          </div>
+        </div>
+      </div>
+      <div class="summary-card" id="summaryDue" data-page-node-id="eBFlrwVgapJr8hQMG5Yjcf">
+        <div class="sc-label" data-page-node-id="IEPkY8jla5dH6wrM2Qk6nB">近期应还金额</div>
+        <div style="display:flex;align-items:center;justify-content:center;margin-top:4px" data-page-node-id="hkDmsc2t9UvCiAoNcVykzS">
+          <span class="sc-value" id="totalDue" style="font-size:20px" data-page-node-id="i47B3RwYbieroRhXL2cYC1">¥0.00</span>
+        </div>
+      </div>
+      <div class="summary-card" id="summaryFree" data-page-node-id="xum5fUkDb6XjmHzNexM8YQ">
+        <div class="sc-label" data-page-node-id="524NeG1lj3o4hLNNkfmFfV">今日免息期</div>
+        <div id="bestFreeRow" style="display:flex;align-items:center;justify-content:center;margin-top:4px;white-space:nowrap;gap:8px" data-page-node-id="cx2A1Sq3osvpvaFHalcsUS">
+          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0" data-page-node-id="J6BXQTsKo994NSVLfEUwzi">
+            <div class="bank-mini-logo" id="bestFreeLogo" style="width:32px;height:32px;border-radius:8px;font-size:11px" data-page-node-id="E0dBacyuKYfHCXuk3Aw0CU">?</div>
+            <span class="best-card-text" id="bestFreeName" style="font-size:14px;font-weight:600;color:var(--text)" data-page-node-id="iVxg3VkPhe1HDFrjkquLbV">请先录入卡片</span>
+          </div>
+          <div style="display:flex;align-items:baseline;gap:2px;flex-shrink:0" data-page-node-id="OPBza0xw1yISTIBB5zq0LH">
+            <span class="sc-value" id="freeDaysNum" style="font-size:20px" data-page-node-id="TK0RxBBOtRoP4bgYxEDQAF">--</span>
+            <span style="font-size:12px;color:var(--text);font-weight:400" data-page-node-id="IeRvoZEeA7DGuAi8CLyZC6">天</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-title" data-page-node-id="tDq1SVq1nIlpryyOBBajLh">
+      <span data-page-node-id="kjeKqG9tOBsRF0x23KGfGn">账单列表</span>
+      <span id="billCount" data-page-node-id="jNp3EFcubkrxfypFjtCDHo">0 笔</span>
+    </div>
+    <div class="bill-list" id="billList" data-page-node-id="WhNXPvWOEOScKHxmcErruH"></div>
+  </div>
+</div>
+
+<!-- Page Panels -->
+<div class="page-overlay" id="pageOverlay" data-page-node-id="wBGSNHZ01S6vn339T3Okxi"></div>
+
+<!-- Wallet Page -->
+<div class="page-panel" id="walletPage" data-page-node-id="gXkjVUXVd79uKKPJXMkUG3">
+  <div class="page-header" data-page-node-id="etpDJLEFBRZlHURJHVyiUO">
+    <button class="back-btn" data-back data-page-node-id="FMIUnG5nQCs0YPNglnzmLB"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="Gn6PSIixghfiYeXE2y08Nz"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="EJc13czm1oT1vWvBo8dSeb"/></svg></button>
+    <h2 data-page-node-id="l5DM5oJV2zkTV0vJLA4O7P">卡包</h2>
+    <button class="back-btn" id="addCardBtn" title="新增" data-page-node-id="gTGxLLqdJIe2ZlqqhrS1v4">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="Lqacxypit8GjI7pPqZCQgA"><line x1="12" y1="5" x2="12" y2="19" data-page-node-id="DQSPKeCcBYOxbMCGwIRWZO"/><line x1="5" y1="12" x2="19" y2="12" data-page-node-id="lDlepHyFlnmS0oclreXNv9"/></svg>
+    </button>
+  </div>
+  <div class="page-body" style="display:flex;flex-direction:column;padding:0" data-page-node-id="R1M8tXSxkDacaUfFI6BHua">
+    <div id="walletList" style="flex:1;overflow-y:auto;padding:16px" data-page-node-id="E1UxyVH2MQHpkPjmGarJ5g"></div>
+    <div id="walletSummary" class="wallet-summary" data-page-node-id="nUxGFrPkL3HKP3ad19kYHZ"></div>
+  </div>
+</div>
+
+<!-- Add/Edit Card Page -->
+<div class="page-panel" id="cardFormPage" data-page-node-id="1pMGgsqE6dA9yibRzA8bdG">
+  <div class="page-header" data-page-node-id="nejGAnpm4KAyln1worWeoI">
+    <button class="back-btn" data-back data-page-node-id="EC4jH1HXu6nAngD4pfoGT2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="NM7OWdDd2aypkY78Jq4vGv"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="bfQuctVreo9CbDWwoX1ZvF"/></svg></button>
+    <h2 id="cardFormTitle" data-page-node-id="nvWaDJiXOLpC4pypvw0JFy">新增卡片</h2>
+    <div style="width:30px" data-page-node-id="U04bZZLHZWMw35jl4myjph"></div>
+  </div>
+  <div class="page-body" data-page-node-id="A5uTiXffWf2DerPEiDriE4">
+    <input type="hidden" id="cardEditId" data-page-node-id="x0q0DurRfQ0FOFPGxxlEx6">
+    <div class="form-group" data-page-node-id="2ZM6ihenz7fQY75cYiJ8hG">
+      <label class="form-label" data-page-node-id="HUgR7G75UVu96KedMG8w49">发卡银行 <span class="required" data-page-node-id="a9VBSkxuq7KZEjazu0e7Ja">*</span></label>
+      <select class="form-select" id="cardBank" data-page-node-id="Im4LzlEeZ5duJymUvg8SZg"><option value="" data-page-node-id="4BndDfJ62wRxKqygYZ99cD">请选择银行</option></select>
+    </div>
+    <div class="form-group" data-page-node-id="dDNphv8XGK2h8rOXUekA5U">
+      <label class="form-label" data-page-node-id="rxeUZcYgFxNQXP8QZ7IAUc">银行卡号 <span class="required" data-page-node-id="V6McHzLDKCtIUv0JyEuL9q">*</span></label>
+      <input type="text" class="form-input" id="cardNo" placeholder="请输入银行卡号" maxlength="23" data-page-node-id="3uhMqscvXj06o2p5d09Gkq">
+      <div class="form-hint" data-page-node-id="70whKXsDP6amrmHR1KCLjL">银行卡号后四位将用于账单展示</div>
+    </div>
+    <div class="form-group" data-page-node-id="HfpWTkOw7bTe16Dux9vYri">
+      <label class="form-label" data-page-node-id="uf4NpQfbDzkxnbPLlaGZAy">持卡人</label>
+      <input type="text" class="form-input" id="cardHolder" placeholder="持卡人姓名（选填）" data-page-node-id="grvs7bvdm5BlaoO8VkT3qF">
+    </div>
+    <div class="form-group" data-page-node-id="1Vb1kZNDnoBRzA2EO6qnph">
+      <label class="form-label" data-page-node-id="xL8AHVgq5khApsEZa0mTfT">账单日 <span class="required" data-page-node-id="WVyEH69eSIeru3UMP83YgE">*</span></label>
+      <select class="form-select" id="cardBillDay" data-page-node-id="dfJEuYqRfFe6R5erZeNedj"></select>
+      <div class="form-hint" data-page-node-id="YL2kYX1umpCLlXrtqaJIat">每月固定出账单的日期</div>
+    </div>
+    <div class="form-group" data-page-node-id="ESWIt8Trpaj4BjH1H1YP0I">
+      <label class="form-label" data-page-node-id="TybA71oDDhZGtkiyHjFjwq">还款规则 <span class="required" data-page-node-id="NbtrjhMPD0eTbmPlrRel9h">*</span></label>
+      <div class="radio-group" id="repayTypeGroup" data-page-node-id="pc1q16JfrEOxlanA6iYJbE">
+        <div class="radio-item" data-value="fixed-date" data-page-node-id="Zf5cFKgDjcjsGn2Ic7aHEC">
+          <input type="radio" name="repayType" value="fixed-date" data-page-node-id="gryNcKKMHxZGrTtCqjiqye"><label data-page-node-id="bxTmwIrzqOc2KN65xKTZJF">固定日期（每月固定某天还款）</label>
+        </div>
+        <div class="radio-item" data-value="fixed-days" data-page-node-id="B1Z4XIXkmMEYHlM6qYUnCK">
+          <input type="radio" name="repayType" value="fixed-days" data-page-node-id="uZ4nJBaGjAYgIgHYpHCi7H"><label data-page-node-id="JEFjCNDaqUtrvm7lGlI25N">固定天数（账单日后N天还款）</label>
+        </div>
+      </div>
+    </div>
+    <div class="form-group repay-field-group" id="repayDateGroup" style="display:none" data-page-node-id="auOeWsP8StYsgPTdmFXYQC">
+      <label class="form-label" data-page-node-id="8TQnGngUCdqzeLfbGf0ZH4">还款日 <span class="required" data-page-node-id="FCiu4gNsce3iwo4rDXgsup">*</span></label>
+      <select class="form-select" id="cardRepayValueDate" data-page-node-id="vtbmJ0ePevHOvTBnFy55Y4"></select>
+      <div class="form-hint" data-page-node-id="UdNdX7pIZtnHfhlEs9wj5i">如广发银行每月8日还款，则选8</div>
+    </div>
+    <div class="form-group repay-field-group" id="repayDaysGroup" style="display:none" data-page-node-id="ISOPgeFAviOLSJreVPffm4">
+      <label class="form-label" data-page-node-id="dvt3cnlWDaOIixfIf6Bdnz">相隔天数 <span class="required" data-page-node-id="wONOMGWkrPxenXjfxymgyo">*</span></label>
+      <input type="number" class="form-input" id="cardRepayValueDays" placeholder="例如：18" min="1" max="50" data-page-node-id="pBpkPofLYWc1qWmT9L2P1F">
+      <div class="form-hint" data-page-node-id="VJhRFRwcumjreirZMtjpzU">如招商银行账单日后18天还款，则填18</div>
+    </div>
+    <div class="form-group" data-page-node-id="qaj73DJwEQo38EbbWVATC9">
+      <label class="form-label" data-page-node-id="UnlrXKulMwbv9gHIBfAzz9">信用额度</label>
+      <input type="number" class="form-input" id="cardLimit" placeholder="请输入信用额度" data-page-node-id="iS3pcUqceevjBItw3qDtKh">
+    </div>
+    <div class="form-group" data-page-node-id="vWTlwwVuV731DMqVVKlYMN">
+      <label class="form-label" data-page-node-id="OfveGhx6pam4S4BYF3BcKD">卡片正面照片</label>
+      <div class="photo-upload" data-page-node-id="5QeRG4NFWWz8LpNcvQj0x7">
+        <div class="photo-box" id="frontPhotoBox" data-page-node-id="t7NJxBLJQUKuzTF5o1BCAC">
+          <div class="placeholder" data-page-node-id="kzT1pSzKMYhMmc6IY3yc2x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="iMcHoapVG6lZ1vclPcNqEH"><rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="DgHS5WE0mNRU03DXwWwANo"/><circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="mhm3YQ8v8FEPGbZw74PbPl"/><path d="M21 15l-5-5L5 21" data-page-node-id="r00vUwn4bqJqbRvupDnJlM"/></svg><br data-page-node-id="L5HypUmdjoxWvWuGybyeVZ">点击上传正面</div>
+        </div>
+        <input type="file" class="photo-input" id="frontPhotoInput" accept="image/*" data-page-node-id="zNgcLDoySfYvX0uLemTOpJ">
+      </div>
+    </div>
+    <div class="form-group" data-page-node-id="SYEb6o1etBH48UMsbbziT3">
+      <label class="form-label" data-page-node-id="HVbE4pckxasHSkVQdupb1D">卡片背面照片</label>
+      <div class="photo-upload" data-page-node-id="MtkKx9yzEB7FY9MaJ6SKig">
+        <div class="photo-box" id="backPhotoBox" data-page-node-id="GA7dUJGAFcfCJDX8qPnsNr">
+          <div class="placeholder" data-page-node-id="cKsi4VuBWh4h44oOJ7sWf3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="zNSIICtP2ZMpH47dUF4M3d"><rect x="3" y="3" width="18" height="18" rx="2" data-page-node-id="7Q1yIleo8HIaPr7rV4g02n"/><circle cx="8.5" cy="8.5" r="1.5" data-page-node-id="oXi2jiwP1gWOUNU2wGfNT9"/><path d="M21 15l-5-5L5 21" data-page-node-id="e7K95sZzkT2OnHSaZDv2Dm"/></svg><br data-page-node-id="bgz4L3jk7y2IkkpcaiqeHO">点击上传背面</div>
+        </div>
+        <input type="file" class="photo-input" id="backPhotoInput" accept="image/*" data-page-node-id="GGMXNu8u88wQeoh0PTYL3Z">
+      </div>
+    </div>
+
+    <div style="font-size:13px;font-weight:600;margin:16px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border)" data-page-node-id="x7s35PQYlU9ZnDPJiskRMi">年费规则</div>
+    <div class="form-group" data-page-node-id="oeREtbGv2RYZKXRkCbFdAx">
+      <label class="form-label" data-page-node-id="7MVRe7PT0CHixx6IxXhxVj">年费类型 <span class="required" data-page-node-id="2ixQFL4mU9rQAOFVv4vUCk">*</span></label>
+      <div class="radio-group" id="feeTypeGroup" data-page-node-id="muOX7em8YNqZOVkAQHKTry"></div>
+    </div>
+
+    <!-- 积分兑换 -->
+    <div class="form-group fee-field-group" id="fg-points" data-page-node-id="twKGMjTr5GrOkfGXRUrfJP">
+      <label class="form-label" data-page-node-id="QHpsO2oKmC7EDlLta26DmX">所需积分 <span class="required" data-page-node-id="bDsdR6G4F9yZwxwSskS5Xh">*</span></label>
+      <input type="number" class="form-input" id="feePoints" placeholder="例如：200000" data-page-node-id="fx6fkmocgfTYSTFXmbRvh4">
+    </div>
+    <!-- 消费金额减免 -->
+    <div class="form-group fee-field-group" id="fg-amount" data-page-node-id="BHk8xWZ0yWSoWT0VNEkjwg">
+      <label class="form-label" data-page-node-id="yMGMVlJSbZmqLkrkcdpno2">需消费金额（元） <span class="required" data-page-node-id="ih88MmBvEqXqPpk40tOOCE">*</span></label>
+      <input type="number" class="form-input" id="feeThreshold" placeholder="例如：50000" data-page-node-id="gRLpDlTcSNeFYwyfCTJPMh">
+    </div>
+    <!-- 刷卡次数减免 -->
+    <div class="form-group fee-field-group" id="fg-count" data-page-node-id="ULnxZTDOUCHVqWHM4U4WRS">
+      <label class="form-label" data-page-node-id="Ct2DDRJpLDht9yOpkTX3dH">需刷卡次数（次/年） <span class="required" data-page-node-id="vOM6xikttQQATliBPg6SWd">*</span></label>
+      <input type="number" class="form-input" id="feeCount" placeholder="例如：6" data-page-node-id="OoEIN1DSSUHtc57wbJT60B">
+    </div>
+    <!-- 次数+金额同时满足 -->
+    <div class="form-group fee-field-group" id="fg-both-count" data-page-node-id="eduIcqmX2iggaaGo1Yc1ER">
+      <label class="form-label" data-page-node-id="antuSrRSrdCPzCDgkmnXNX">需刷卡次数（次/年） <span class="required" data-page-node-id="xVf8eGEXv6KczzyNo3Diaa">*</span></label>
+      <input type="number" class="form-input" id="feeBothCount" placeholder="例如：6" data-page-node-id="U90eYey1ieX8RmNAybZroq">
+    </div>
+    <div class="form-group fee-field-group" id="fg-both-amount" data-page-node-id="dgfRzd8gTZPwCAp6H9SFpL">
+      <label class="form-label" data-page-node-id="i1GUv6RO04gNPttKK8K3eV">需消费金额（元） <span class="required" data-page-node-id="Zq88qTeK2nuSnn26SeZAOl">*</span></label>
+      <input type="number" class="form-input" id="feeBothThreshold" placeholder="例如：50000" data-page-node-id="C8umvn1AHUwICDnfHdusgx">
+    </div>
+    <!-- 一段时间内免年费 -->
+    <div class="form-group fee-field-group" id="fg-period" data-page-node-id="FSRAzpxnZalFEvf964NZMn">
+      <label class="form-label" data-page-node-id="NwYb3OWqPHaEnPGFdqTe6s">免年费截止日期 <span class="required" data-page-node-id="vRp7vN6xfyj6QLJNyQCuDz">*</span></label>
+      <input type="date" class="form-input" id="feeDeadline" data-page-node-id="AYEkaTkEwl0DeF0QcfIm5C">
+    </div>
+    <!-- 自定义 -->
+    <div class="form-group fee-field-group" id="fg-custom" data-page-node-id="CtazFNLQgVrAdCEkOZnoIb">
+      <label class="form-label" data-page-node-id="BxzP9iwu3G2zyGSdPeTn4V">自定义规则说明 <span class="required" data-page-node-id="iODFrQkUQCff0NrSMwMYVg">*</span></label>
+      <input type="text" class="form-input" id="feeCustomRule" placeholder="请描述您的年费减免规则" data-page-node-id="qHWSSfEYEKiuEworBuvzP2">
+    </div>
+
+    <!-- 年费金额（通用） -->
+    <div class="form-group" id="feeAmountGroup" data-page-node-id="xHEG9HVVOb3VNAPJrhrSTG">
+      <label class="form-label" data-page-node-id="wuFMs6WcEWOluFgQI0fUVK">年费金额（元）</label>
+      <input type="number" class="form-input" id="feeAmount" placeholder="请输入年费金额" data-page-node-id="ZSDByXo4Mzd7Cnz1FxShb2">
+    </div>
+    <div class="form-group" id="feeDateGroup" data-page-node-id="ssSAQPZRoDBa9LCtZJfdVq">
+      <label class="form-label" data-page-node-id="cmNG5e2JQB5ciIsriyTaAH">收取时间</label>
+      <input type="text" class="form-input" id="feeDate" placeholder="例如：每年开卡日/每年1月1日" data-page-node-id="89ioM5arUxiTpPSHrotY1a">
+    </div>
+
+    <div class="form-group" data-page-node-id="uJIbD4GTf5DUE4mziYbYzs">
+      <label class="form-label" data-page-node-id="BQASZeZhhCZUqZrAD1uK1S">备注</label>
+      <input type="text" class="form-input" id="cardNotes" placeholder="建议6个汉字以内" data-page-node-id="4ZE8BCtrEhruoMUBIgAyjn">
+    </div>
+    <div style="height:80px" data-page-node-id="VI9a13eqgMr1aEkNwDpDck"></div>
+  </div>
+  <div class="bottom-btn" data-page-node-id="1A805W3MHt5kIXwIqFoSdD">
+    <button id="saveCardBtn" data-page-node-id="c8cBVrsFZEhsyCnXxcggvF">保存卡片</button>
+  </div>
+</div>
+
+<!-- Card Detail Page -->
+<div class="page-panel" id="cardDetailPage" data-page-node-id="rnruFxXKlCA0Gs8A5hEo7B">
+  <div class="page-header" data-page-node-id="HgI5P5z4DMqB7NFouoHipJ">
+    <button class="back-btn" data-back data-page-node-id="AMjJ3nwsJfK7giEBX0fEdo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="iB2yadmsQXNa37SlHxNwG8"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="HmuNdtXCNbefagV0ufNdOP"/></svg></button>
+    <h2 data-page-node-id="pDYfRIOoDk1BqFd0CailBU">卡片详情</h2>
+    <div style="width:30px" data-page-node-id="1ABMECG1mACqPBzyB7a8Gz"></div>
+  </div>
+  <div class="page-body" id="cardDetailBody" data-page-node-id="u4AAltUGajGOCD9IPuA5Yp"></div>
+</div>
+
+<!-- Manual Bill Page -->
+<div class="page-panel" id="manualBillPage" data-page-node-id="wRDLKjk7qcDWdVCah1jA4Q">
+  <div class="page-header" data-page-node-id="TOIQ2ifkH6yhYDbElN53zg">
+    <button class="back-btn" data-back data-page-node-id="soYeSTYPIAPCWV9We8D2Ro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="RrDOWhQAfGzyskqhJESKGt"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="ZH3H9FU64cql5m0VweUFVb"/></svg></button>
+    <h2 id="billFormTitle" data-page-node-id="Wrh11zzfAnDkTlYPU70AFp">录账</h2>
+    <div style="width:30px" data-page-node-id="NKJ0PSUysokRVSk2FB9zwj"></div>
+  </div>
+  <div class="page-body" data-page-node-id="ywXnCKj9fy6qnEEzE3tfNI">
+    <div style="background:#F0F9FF;border-left:3px solid #0EA5E9;padding:10px 12px;border-radius:6px;margin-bottom:12px;font-size:12px;color:#0C4A6E;line-height:1.7" data-page-node-id="billFormTip">
+      📝 <b>录账</b>用于手动添加一笔已知账单（金额 + 还款日）。<br>
+      如果想从邮箱自动拉取账单，请回到主页点 <b>刷新</b>。
+    </div>
+    <!-- 类型切换 -->
+    <div class="type-tabs" id="billTypeTabs" data-page-node-id="iWZAVwWDz4dDCRkB3etjYz">
+      <div class="type-tab active" data-value="custom" data-page-node-id="WyBUZFZxbQcx4mzFjkZGx5">自定义账单</div>
+      <div class="type-tab" data-value="credit_manual" data-page-node-id="nc8xcfqbTDBzXXj6VNxnli">信用卡账单</div>
+    </div>
+
+    <!-- 自定义账单表单 -->
+    <div id="customBillForm" data-page-node-id="jmRiSXmw3tbCLYluLQVdTF">
+      <div class="bill-form-card" data-page-node-id="lDWFtN8wpdH2x7uZ2HtpkD">
+        <div class="form-row" data-page-node-id="FC5Hu1yUSBdXiSEVfnWdij">
+          <span class="form-row-label" data-page-node-id="nrqAnmCgC778P5MkfJifs6">账单名称 <span class="required" style="color:var(--red)" data-page-node-id="QL3R9mU3eiEVa9jduEpLc0">*</span></span>
+          <input type="text" class="form-row-input" id="cbName" placeholder="输入账单名称" data-page-node-id="00trzwMa3a5NTjflSTOas1">
+        </div>
+        <div class="form-row" data-page-node-id="8jFhDpa2SpFeODsuSsc4JQ">
+          <span class="form-row-label" data-page-node-id="pDOnAJESG8GSTrEmg7qMXE">每期金额 <span class="required" style="color:var(--red)" data-page-node-id="UPM0e9klGzx6BzlciqBB2t">*</span></span>
+          <input type="number" class="form-row-input" id="cbAmount" placeholder="如：1600" step="0.01" data-page-node-id="MUEzuR9L5rBPYIV7T9GVCt">
+        </div>
+        <div class="form-row" data-page-node-id="Ep0Hv9aiYmnqyc34LBH4ko">
+          <span class="form-row-label" data-page-node-id="ASauCOt16QsuUyz2JAjEsm">还款日期 <span class="required" style="color:var(--red)" data-page-node-id="gTEB7uCQk0UD5C60RF8LIv">*</span></span>
+          <input type="date" class="form-row-input" id="cbDueDate" style="color:var(--text2)" data-page-node-id="CIGuT5Dyg59jEkwI3zDmVH">
+        </div>
+        <div class="form-row" id="cbCycleRow" style="cursor:pointer" data-page-node-id="qEO3Xt0wBDaKGnCUwBBLyW">
+          <span class="form-row-label" data-page-node-id="32wcMnjjjE4OGE7xdHjsRa">还款周期 <span class="required" style="color:var(--red)" data-page-node-id="6P2WpQFTw2toz3o1gxiWBh">*</span></span>
+          <span class="form-row-value" id="cbCycleDisplay" data-page-node-id="b4CGQto8KlcBgSwp8z7q6n"><span data-page-node-id="2wUoW4GaPuNDHtEufPWo9e">每月一次</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="lZOBHqYtjywyqJGDUdsEmA"><path d="M9 18l6-6-6-6" data-page-node-id="4E8utGJj0FL6nKFymMLBgU"/></svg></span>
+        </div>
+      </div>
+
+      <div class="advanced-toggle" id="cbAdvancedToggle" data-page-node-id="PUBFD4DQog5r7KNB5uIA16">
+        <span data-page-node-id="rEs7NK48CDeeTXQMVglcMk">显示高级配置</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="jpARF5wtlDruZHhCfjf2ik"><path d="M6 9l6 6 6-6" data-page-node-id="8zhcQ3k55v3DCgSjSc8F56"/></svg>
+      </div>
+
+      <div class="advanced-section" id="cbAdvancedSection" data-page-node-id="W4Y1pJz4cuQCrluOSf4E04">
+        <div class="bill-form-card" data-page-node-id="KxxJ5t6lYzJm9ySvcDhsHg">
+          <div class="form-row" data-page-node-id="fXMRerSjbFqjf6aKV0HxRv">
+            <span class="form-row-label" data-page-node-id="vngFVN60aX1ORmg7GPNpN5">发卡银行</span>
+            <select class="form-row-input" id="cbBank" style="appearance:none;text-align:right;background:transparent;padding-right:4px" data-page-node-id="I5uAjOr4E8owY3AuE03URR">
+              <option value="" data-page-node-id="qIBhD9Y2zjf3Fa2JgGSsCR">请选择银行（选填）</option>
+            </select>
+          </div>
+          <div class="form-row" data-page-node-id="B3gsx0OT5Ut7SFB92j4GZu">
+            <span class="form-row-label" data-page-node-id="gUdr9OxlsCPKLB6wTvPl8D">持卡人</span>
+            <input type="text" class="form-row-input" id="cbHolder" placeholder="持卡人姓名（选填）" data-page-node-id="xzj66DpRMGhrd4kG7J6hL8">
+          </div>
+          <div class="form-row" data-page-node-id="eMlOJfZJttaMDAr5kgRkAr">
+            <span class="form-row-label" data-page-node-id="7sgykbBoFhyZNObHVqcDXY">银行卡号</span>
+            <input type="text" class="form-row-input" id="cbCardNo" placeholder="输入到账银行卡号" style="width:130px;flex:0 0 auto;text-align:right" data-page-node-id="OOAShk9Z0W4hphf1jSECBK">
+          </div>
+          <div class="form-row" data-page-node-id="8ZWgCusf0SObxr0TElPEW0">
+            <span class="form-row-label" data-page-node-id="EVPVN8jxGgVGDDF7YJAzyv">备注信息</span>
+            <input type="text" class="form-row-input" id="cbNote" placeholder="建议6个汉字以内" maxlength="20" data-page-node-id="2aWBVRKS5Z0STPH9M38rgg">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 信用卡账单表单（独立，不关联卡包） -->
+    <div id="creditManualForm" style="display:none" data-page-node-id="qoaqV7wjDAjtxuPVV1oa7w">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px" data-page-node-id="ZhKgB732aazl3dUBRoMt74">添加账单，提醒还款、避免逾期</div>
+      <div style="margin-bottom:10px" data-page-node-id="GNMeGT7qhFPR10TTDKfNMb">
+        <button id="cmPickCardBtn" style="width:100%;padding:11px;border:1px dashed var(--primary);border-radius:var(--radius-sm);background:var(--primary-light);color:var(--primary);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s" data-page-node-id="cWvoz8AHB5p19T5MDPhCn7">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="FmflQABIoYumJAaHqE4J88"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" data-page-node-id="pmNTAImeEl5UNVtm1OkZHF"/><line x1="1" y1="10" x2="23" y2="10" data-page-node-id="P3T6D6mxW2TCBdF1jZ3WHk"/></svg>
+          从卡包选择信用卡
+        </button>
+      </div>
+      <div class="bill-form-card" data-page-node-id="Dwtzb1m3kHXpyVcERMPZFn">
+        <div class="form-row" data-page-node-id="0H5YVS8cEwHrEfWAVTZMs2">
+          <span class="form-row-label" data-page-node-id="cxSrTdukAlYbBvIGmiMPLM">发卡银行 <span class="required" style="color:var(--red)" data-page-node-id="zpWuQ8Ojb9DsgIYPLtdTwJ">*</span></span>
+          <select class="form-row-input" id="cmBank" style="appearance:none;text-align:right;background:transparent;padding-right:4px" data-page-node-id="gP62d0AwwsMuEqrgfinXEM">
+            <option value="" data-page-node-id="Ci22rVnjL6qn6ZuzbNpUzI">请选择银行</option>
+          </select>
+        </div>
+        <div class="form-row" data-page-node-id="ODZGX43Qt1wLOuEgvFkogt">
+          <span class="form-row-label" data-page-node-id="IVqiQMJrwBMurGAqNSeqb0">银行卡号 <span class="required" style="color:var(--red)" data-page-node-id="twr1uWLctz4mfvdHMCK8Qk">*</span></span>
+          <input type="text" class="form-row-input" id="cmCardNo" placeholder="请输入完整银行卡号" maxlength="23" style="text-align:right" data-page-node-id="LIqAVu5OtN6EIbJXHpCQkM">
+        </div>
+        <div class="form-row" data-page-node-id="wYjbEjs3AX2L4YM2Bnv2D5">
+          <span class="form-row-label" data-page-node-id="7ml3oIhYCNROShLCwwGwSl">还款日 <span class="required" style="color:var(--red)" data-page-node-id="WfaOtQFpC8Yys13k3ojKPE">*</span></span>
+          <input type="date" class="form-row-input" id="cmDueDate" style="color:var(--text2)" data-page-node-id="wPvMNIJz1Dz4E7jZTJZoz7">
+        </div>
+        <div class="form-row" data-page-node-id="y6LRDDSRBvP5ce8qSs6FGn">
+          <span class="form-row-label" data-page-node-id="jmqQnXUHf8GWNdBwgRKjKS">还款金额 <span class="required" style="color:var(--red)" data-page-node-id="yV4WSIVhjonOuHa5ohDgxe">*</span></span>
+          <input type="number" class="form-row-input" id="cmAmount" placeholder="请输入还款金额" step="0.01" data-page-node-id="k1uyTstE668CE2QLEbGAw4">
+        </div>
+        <div class="form-row" data-page-node-id="Dia7CEQoOLTBZIyjmi8OBo">
+          <span class="form-row-label" data-page-node-id="dWYViqksM0LlHIEDN5oLPo">备注</span>
+          <input type="text" class="form-row-input" id="cmNote" placeholder="建议6个汉字以内" maxlength="50" data-page-node-id="1Ka3LIGm6fhy3s4zAn6r3J">
+        </div>
+      </div>
+    </div>
+
+    <div style="height:80px" data-page-node-id="I2uvJ47Yr0qQgV6lDWxOr5"></div>
+  </div>
+  <div class="bottom-btn" data-page-node-id="8vKvd4RHz85GBGICMrHYXq">
+    <button id="saveBillBtn" data-page-node-id="iZtqHwiScFr346bmasKAOE">保存</button>
+  </div>
+</div>
+
+<!-- Card Picker for Credit Manual Bill -->
+<div class="picker-overlay" id="cardPickerOverlay" data-page-node-id="Kojfx8b0mL26uoRKKgHQ1g">
+  <div class="picker-panel" style="max-height:70vh;display:flex;flex-direction:column" data-page-node-id="ypUORBfaQzLsnvowQAdlh9">
+    <div class="picker-header" data-page-node-id="HBTSrptXvjGDYEpXMBNNSa">
+      <button class="picker-btn cancel" id="cardPickerCancel" data-page-node-id="d4aVlUaqoUItLvpYiLad4l">取消</button>
+      <span class="picker-title" data-page-node-id="1Fh4fD23V3Vj9RlMDprd7C">从卡包选择</span>
+      <div style="width:40px" data-page-node-id="Dj9O4Sv5oqEHrkxLgrSuOh"></div>
+    </div>
+    <div id="cardPickerList" style="flex:1;overflow-y:auto;padding:8px 16px" data-page-node-id="tbxs2IkwmZLAHFm70MFIQm"></div>
+  </div>
+</div>
+
+<!-- Bill Period Chooser (ambiguous period: within 3 days after bill day) -->
+<div class="picker-overlay" id="billPeriodOverlay" data-page-node-id="17cZlIpaEmMmH3PrHwSXoD">
+  <div class="picker-panel" style="max-height:50vh;display:flex;flex-direction:column" data-page-node-id="jJuGfxcoEKmvq5peykOCNn">
+    <div class="picker-header" data-page-node-id="TRpUYi9X1jkuejmdBvAOTq">
+      <button class="picker-btn cancel" id="billPeriodCancel" data-page-node-id="eU3dt9GZElM1H8FbpZpRKY">取消</button>
+      <span class="picker-title" data-page-node-id="BqWHDC4AckfRpKYWwxH6EH">选择账单期</span>
+      <div style="width:40px" data-page-node-id="0KOcN0NMG0PqIFtnaW8YOe"></div>
+    </div>
+    <div id="billPeriodContent" style="padding:20px 16px" data-page-node-id="0rVSMTffEWa5CpiFEwZ4g4"></div>
+  </div>
+</div>
+
+<!-- Custom Confirm Dialog (reused for delete / undo repay etc.) -->
+<div class="picker-overlay" id="confirmOverlay" data-page-node-id="jhXhEcVV1XcWpiMuCNZxR4">
+  <div class="picker-panel" style="max-height:40vh;display:flex;flex-direction:column;border-radius:var(--radius);margin:auto 20px;width:auto;max-width:360px" data-page-node-id="40OXeRt6n9QWriCcm2DC0J">
+    <div style="padding:24px 20px 16px;text-align:center" data-page-node-id="pvHDy4JcBAlnUU3J1vpS9F">
+      <div id="confirmTitle" style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px" data-page-node-id="8KyKHRLFcRhLgGXL7ZxLBe">确认？</div>
+      <div id="confirmDesc" style="font-size:14px;color:var(--text2);line-height:1.6" data-page-node-id="cCRWgpSoVusiTl0fcUNVAU"></div>
+    </div>
+    <div style="display:flex;gap:10px;padding:0 20px 20px" data-page-node-id="7hCtUyfezQcj7DGlgO16HX">
+      <button id="confirmCancelBtn" style="flex:1;padding:11px;border:1px solid var(--border);background:transparent;border-radius:10px;color:var(--text2);font-size:15px;cursor:pointer;font-weight:500" data-page-node-id="7raUBPYAFZNMxEcdmNC2T9">取消</button>
+      <button id="confirmOkBtn" style="flex:1;padding:11px;border:none;background:var(--red);border-radius:10px;color:#fff;font-size:15px;cursor:pointer;font-weight:500" data-page-node-id="VfHlsltmAdikQTEiT7lEAz">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Messages Page -->
+<div class="page-panel" id="messagesPage" data-page-node-id="r1KrjhmTxdAs3GtBfD92X6">
+  <div class="page-header" data-page-node-id="GgXnxCbvfkdkmCgHrRaAXt">
+    <button class="back-btn" data-back data-page-node-id="LVBebBPAMOwYHGKH812M8G"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="OUpOX06jhJyzAAFFAbI9hz"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="chHyd7zS67upC3V4fi8utY"/></svg></button>
+    <h2 data-page-node-id="KAOvJSj7kLSCk8S4DQpgcr">消息中心</h2>
+    <button class="back-btn" id="clearAllMsg" title="全部已读" data-page-node-id="yRTTOId2TCUmYdtgmqZZ02">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="bwmu2So8tSmmYMPdIumz1X"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" data-page-node-id="oXtzrxY1nEtpCwgY1fFIMj"/><polyline points="22 4 12 14.01 9 11.01" data-page-node-id="TBBDiTbaiEXw5tQ8pdJtJK"/></svg>
+    </button>
+  </div>
+  <div class="page-body" id="messagesList" data-page-node-id="ppO69eypqjz7AUgR9p5ExN"></div>
+</div>
+
+<!-- Annual Fee Page -->
+<div class="page-panel" id="annualFeePage" data-page-node-id="20K5LB11Qzoe2oTtq4mR0H">
+  <div class="page-header" data-page-node-id="vBQ03ojrbkxHL6lwCaGHfB">
+    <button class="back-btn" data-back data-page-node-id="wtNPpXCtxsjpGaDUnf7DnU"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="DJpB1oCWQVu9JRKgFngd7E"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="ySeRGiuXRHBxdJcjRcfTwj"/></svg></button>
+    <h2 data-page-node-id="mUQU00AHdUAykXp4nGBFUQ">年费</h2>
+    <div style="width:30px" data-page-node-id="PqZVIkf1FlhMYhglvscNwf"></div>
+  </div>
+  <div class="page-body" id="annualFeeList" data-page-node-id="kJrE1GbYAfDt2Es2DjnXxo"></div>
+</div>
+
+<!-- Interest Free Detail Page -->
+<div class="page-panel" id="freeDetailPage" data-page-node-id="Op901iHCu07FTZUFebbI01">
+  <div class="page-header" data-page-node-id="I2UTafGcDCweHDBMGSgXH9">
+    <button class="back-btn" data-back data-page-node-id="OKJBut2GhXdBOjkWbZXQvj"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="aUhuRF4GKVwrEewdWRL8xX"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="4X0Lw5cKpaAHdxsmvsCHg2"/></svg></button>
+    <h2 data-page-node-id="Y7vtewrvKnIePzSPUf4ZQd">今日免息期</h2>
+    <div style="width:30px" data-page-node-id="saarB2xBIA4QCnqHNNR4bR"></div>
+  </div>
+  <div class="page-body" data-page-node-id="69c6jBCw3d34Oc0lyF78QD">
+    <div style="background:var(--card);border-radius:var(--radius);padding:14px;margin-bottom:14px;box-shadow:var(--shadow)" data-page-node-id="gbcSrHtPKolx720bZGuCXs">
+      <div id="freeLearnBtn" style="font-size:13px;color:var(--primary);font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px" onclick="toggleFreeLearn()" data-page-node-id="BvHEgbZn07crF2yBIUJl1d">
+        点我学习享受更长免息期 >>
+      </div>
+      <div id="freeLearnContent" style="display:none;margin-top:10px" data-page-node-id="1WPqgElTsWrPaMF2ypvScb">
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px" data-page-node-id="vBme0qj6EdF3htEABUTabe">① 什么是账单日和还款日？</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px" data-page-node-id="wzh0I2W8bP53P1Z8voHdYL">
+          <b data-page-node-id="fgLJaQt4S22A9sw9srN00c">账单日</b>是信用卡每月固定的记账日期，在这一天会将上月账单日后第一天开始的消费，到本月账单日当天之间的消费，汇总为本期账单。<br data-page-node-id="RBHwujr4EcimRV6ThmMmaV">
+          <b data-page-node-id="kOgd921Rc4Krpmn0mlczHr">还款日</b>（最后还款日）通常是账单日后的第20天左右，每个银行规定不太一样，即必须在当月的还款日当天或之前，还上月信用卡的账单。
+        </div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px" data-page-node-id="XxebZgrHawd5VJWf3fZDYw">② 什么是免息期？如何有更长免息期？</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px" data-page-node-id="xRw8gCNUn5uEbh3dntJLDA">
+          从信用卡消费当天，到期还款日之间的日期称为<b data-page-node-id="RZU6fEjVayhjjI3ArXUxJo">免息还款期</b>，简称<b data-page-node-id="9WECg6EejtiLhnnBROFfre">免息期</b>。<br data-page-node-id="FsFPzV2wIUpJYF6BHIKrHV">
+          账单日后一天消费一般为<b data-page-node-id="9HJ51yFTiM3y53qsxLx66g">最长</b>免息期，账单日当天消费一般为<b data-page-node-id="hUfgDCHnjRgBbC9nXmtBH5">最短</b>免息期。<br data-page-node-id="WEx5WIdhMSN4uE0zvj5ZFD">
+          口诀：<b data-page-node-id="CdTNZMHGD4zXKJ3tePCGeE">刚过账单日，免息更多时。</b>
+        </div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px" data-page-node-id="G0e9bluGnGApFOCDdftbF3">③ 什么是今日免息期？</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.6" data-page-node-id="5jVrRxUfAxyWb3mLlDwgKy">
+          <b data-page-node-id="Tu3u8oErteZ3SRR3zyv9Cn">今日免息期</b>，即你今天刷信用卡消费，这笔钱在最后还款日（还款日）再还上，这期间你享受到的免息天数。
+        </div>
+      </div>
+    </div>
+    <div id="freeDetailList" class="if-list" data-page-node-id="Q1UzLPnACl4S29PPhK5W7B"></div>
+  </div>
+</div>
+
+<!-- Repay Days Detail Page -->
+<div class="page-panel" id="repayDaysPage" data-page-node-id="H1xrhIm1N0CEh1mwEJ2z8I">
+  <div class="page-header" data-page-node-id="7Sn7Jkghh3545pf6FJrTht">
+    <button class="back-btn" data-back data-page-node-id="JoxfOFEYB8Zpw7leirPam9"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="KGUN8ptOpNDH5QaU0T9GEG"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="AdJr3eCDYNWfCDxLGDYcqB"/></svg></button>
+    <h2 data-page-node-id="9K47Tnm0Mu8hydgy3wqU7p">今日距最后还款日</h2>
+    <div style="width:30px" data-page-node-id="tQydPPq2uBKqWZbIFt1FC1"></div>
+  </div>
+  <div class="page-body" data-page-node-id="x8suYQptVZEeSDPGCTEIcB">
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;line-height:1.6;padding:0 2px" data-page-node-id="pH9gJV4XOOn3GhPMkWueIY">
+      1、根据卡包中已录入的信用卡信息，计算今日距各张卡最后还款日的天数；<br data-page-node-id="jPbCevYGOdg6cNJPpiagWI">
+      2、还款日前7天开始提醒，0天=到期日，负数=逾期天数。
+    </div>
+    <div id="repayDaysList" class="if-list" data-page-node-id="joZe8Af7Dnot804CaKoUdP"></div>
+  </div>
+</div>
+<!-- Remaining Due Detail Page -->
+<div class="page-panel" id="dueDetailPage" data-page-node-id="K1w0ik0Ep8U3TxR6UnGv7l">
+  <div class="page-header" data-page-node-id="p3vh5UfssaBfptptoPJbTy">
+    <button class="back-btn" data-back data-page-node-id="ql4QzTrPOj2LNkfhEvYOFr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="pIiQ4brxNXS62c904GYpmB"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="eA7XeIIBjwpR5dUL9lClIj"/></svg></button>
+    <h2 data-page-node-id="NF2yFaSJ6ppq3JCnDAvswB">近期应还详情</h2>
+    <div style="width:30px" data-page-node-id="Vv9NQsjOb9LRO88mofxIAI"></div>
+  </div>
+  <div class="page-body" data-page-node-id="Xu19tBM2TAMRSS1ky2jEEO">
+    <div class="rd-grid" data-page-node-id="OUKfpPPrfHQvsjAKGpOOsw">
+      <div class="rd-card" data-page-node-id="hiZW3rEHqmpaa8ERL75QDJ"><div class="rd-card-label" data-page-node-id="5OKHtUXYP9AMcD3U38bKZZ">3天内账单金额</div><div class="rd-card-value red" id="rdTotal" data-page-node-id="HfBJdiqlCdZyphoWOh59IH">¥0.00</div></div>
+      <div class="rd-card" data-page-node-id="8Bc3jDRFBR25sIhbsZvhlZ"><div class="rd-card-label" data-page-node-id="kfxB0or7BruVwPM7Ayil3H">7天内账单金额</div><div class="rd-card-value" id="rdPaid" data-page-node-id="YUcihyFYUD5A5FcMYkImLz">¥0.00</div></div>
+      <div class="rd-card" data-page-node-id="w45JlSNG6k9LQ7h9TUy0co"><div class="rd-card-label" data-page-node-id="RAXHX4HwybAPGvRlqDNub4">15天内账单金额</div><div class="rd-card-value" id="rdRemaining" data-page-node-id="2iAd7KFHOqlStJPSwGKTxN">¥0.00</div></div>
+      <div class="rd-card" data-page-node-id="8chAwP9WVTnHBNn5zAkFM3"><div class="rd-card-label" data-page-node-id="GXFx2dimU7FwA0TAU3D8la">30天内账单金额</div><div class="rd-card-value" id="rdNearest" style="font-size:16px" data-page-node-id="OebsPRkJFkXMIBlJFEWH5Z">¥0.00</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Page -->
+<div class="page-panel" id="settingsPage" data-page-node-id="oG7wzOrAByAYQwaUgWP2Jd">
+  <div class="page-header" data-page-node-id="6qFA799INvpPyjRN9T0UR9">
+    <button class="back-btn" data-back data-page-node-id="1FFXXRdmqwzyQCeNz9Dx9y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" data-page-node-id="b8QXuRfrVE42hcq67M9nhO"><path d="M19 12H5M12 19l-7-7 7-7" data-page-node-id="WZLX59jAFnV6qAvOuHuGsu"/></svg></button>
+    <h2 data-page-node-id="hNwhA5UgTMvk0oPLYkNis2">设置</h2>
+    <div style="width:30px" data-page-node-id="AqGr6PVSd0rFpqDVbh7od7"></div>
+  </div>
+  <div class="page-body" data-page-node-id="qBRzcSDdAtF1FM9uJ8C4Qp">
+    <!-- 邮箱配置 -->
+    <div class="fold-header" data-fold="email" data-page-node-id="0PMcPeY3AD0q5iHlZ0VvE4">
+      <span data-page-node-id="FXuaKLKULzy44ZzWUy2xX1">邮箱配置</span>
+      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" data-page-node-id="NaUkx0bAsvYyR96LRnFkRv"><polyline points="6 9 12 15 18 9" data-page-node-id="f9rNdmrvYbgTVdalm4YySl"/></svg>
+    </div>
+    <div class="fold-body" id="fold-email" style="display:none" data-page-node-id="ZYLTD6VLigKc5e0fc11zaE">
+      <div style="font-size:12px;color:var(--primary);background:var(--primary-light);padding:10px 12px;border-radius:var(--radius);margin-bottom:12px;line-height:1.6" data-page-node-id="nA4yXfINjYN7O18t3fWfEY">
+        推荐使用 <strong data-page-node-id="H70gDprqdQVRcY3zVAEiF9">QQ邮箱</strong> 接收信用卡账单邮件，兼容性最佳。其他邮箱后续版本将逐步支持。
+      </div>
+      <div class="form-group" data-page-node-id="sUojsdE3Rp0rQOUWMlWC6W">
+        <label class="form-label" data-page-node-id="GHnSxORPhi3HouQENYLYUn">QQ 邮箱账号</label>
+        <input type="text" class="form-input" id="settingEmail" placeholder="123456@qq.com" data-page-node-id="sp9BnRTmeCYnWlUlpiImx0">
+      </div>
+      <div class="form-group" data-page-node-id="j92RkBvF6gT8nv7a9FAwDI">
+        <label class="form-label" data-page-node-id="sy7am39dCNEvXv4VJf0jfo">邮箱授权码</label>
+        <input type="password" class="form-input" id="settingAuthCode" placeholder="QQ邮箱授权码" data-page-node-id="TTO9wGWFR5pGjROu8xBD3M">
+        <div class="form-hint" data-page-node-id="uXleXPse5Yd7DsM7s498rB">在QQ邮箱设置中获取授权码（不是QQ密码）</div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:12px" data-page-node-id="dFcijkuExGZieJgnesaomq">
+        <button class="btn-outline" id="testEmailBtn" type="button" style="flex:1;padding:10px;border:1px solid var(--primary);color:var(--primary);background:transparent;border-radius:var(--radius);cursor:pointer;font-size:14px" data-page-node-id="jfahH1onk7jV1gklUTm2oG">测试连接</button>
+        <button class="btn-outline" id="showEmailHelpBtn" type="button" style="flex:1;padding:10px;border:1px solid var(--border);color:var(--text2);background:transparent;border-radius:var(--radius);cursor:pointer;font-size:14px" data-page-node-id="auk0b4jg0Nod1HZHyZwdDr">如何获取授权码</button>
+      </div>
+      <div id="emailHelpPanel" style="display:none;font-size:12px;color:var(--text2);background:var(--bg);padding:12px;border-radius:var(--radius);margin-bottom:12px;line-height:1.8" data-page-node-id="C5JPDaawA9WB3t9RghH7or">
+        <div style="font-weight:600;color:var(--text);margin-bottom:6px" data-page-node-id="S33IicqcPF5I8IpvwnOz85">QQ邮箱授权码获取步骤：</div>
+        <div data-page-node-id="LflASANiioAFpGEyTG8WkM">1. 打开 QQ 邮箱网页版（mail.qq.com）</div>
+        <div data-page-node-id="EbITN8ysPxBSIvdXaZBJuW">2. 点击顶部「设置」→「账户」</div>
+        <div data-page-node-id="MwjEeSeaaYPeTejqeNcESh">3. 找到「POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务」</div>
+        <div data-page-node-id="Ir3G3ug59PDOAl1bDkdamk">4. 开启「IMAP/SMTP服务」</div>
+        <div data-page-node-id="0ZbboS6mgHo1KxwDdbzM0l">5. 按提示发送短信验证，获得<strong data-page-node-id="ES00xLvEcxIvui4bkRmrGV">授权码</strong>（16位字符串）</div>
+        <div data-page-node-id="Jirz5UhjOIZX7XYS302AcR">6. 将授权码填入上方输入框（不是QQ密码！）</div>
+        <div style="margin-top:6px;color:var(--text3)" data-page-node-id="wJfFTM3aojjEcr57djE9zp">提示：授权码只会显示一次，请妥善保存。</div>
+      </div>
+    </div>
+
+    <!-- 数据同步 -->
+    <div class="fold-header" data-fold="sync" style="margin-top:16px" data-page-node-id="G5tkgx9D2Tnnr3KTxzwJwo">
+      <span data-page-node-id="La74V2G7LLUTeW668KkqPJ">数据同步</span>
+      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" data-page-node-id="l0QIyFcAyu99brsl2F0nrN"><polyline points="6 9 12 15 18 9" data-page-node-id="NYBKJZ8QFDAD2YdGmv6JcU"/></svg>
+    </div>
+    <div class="fold-body" id="fold-sync" style="display:none" data-page-node-id="2pxERU7jJQWRJmlNIHGDFe">
+      <div class="setting-row" id="syncStatusRow" data-page-node-id="JpivfhtDAD9IzGSN8wBg00">
+        <div data-page-node-id="4Jb8gKCoJCsc3Qethv13oF"><div class="setting-label" id="syncStatusLabel" data-page-node-id="kbqHLFFaqkqKwl2CDmME3m">本地模式</div><div class="setting-desc" id="syncStatusDesc" data-page-node-id="MRNscavebhhJo6ftdUywZ4">数据仅保存在浏览器中</div></div>
+        <span id="syncStatusBadge" style="font-size:12px;padding:2px 8px;border-radius:10px;background:var(--text3);color:#fff" data-page-node-id="XjVSQWLoFWeGyVDVoFZJ74">离线</span>
+      </div>
+      <div class="setting-row" style="cursor:pointer" id="manualSyncBtn" data-page-node-id="ID9OHvxS9CoYywIZmweFjT">
+        <div data-page-node-id="nUyFC7RfKVWoW16W8bCWxH"><div class="setting-label" data-page-node-id="PfjWNkNAGnLmQqiEChmUAQ">手动同步</div><div class="setting-desc" data-page-node-id="NzMdkjjiN5WVi5oCMVX9dC">立即将数据同步到本地服务端</div></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="color:var(--text3)" data-page-node-id="k72O12hDKiNkBFGmIl1rsN"><polyline points="23 4 23 10 17 10" data-page-node-id="VUGvgn9QCFI93tW5YwONQ5"/><polyline points="1 20 1 14 7 14" data-page-node-id="PoFDAPuhaCjS4zzJyFSEAg"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" data-page-node-id="FKX7PKVPPa6g5QRAzD41H7"/></svg>
+      </div>
+    </div>
+
+    <!-- 数据管理 -->
+    <div class="fold-header" data-fold="data" style="margin-top:16px" data-page-node-id="Z3iFUHEzdjKeJfAmnH05nr">
+      <span data-page-node-id="GZGANcFiLeRtKSv4hn3dP3">数据管理</span>
+      <svg class="fold-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" data-page-node-id="qlFs2TznDEJtZNOwGqYpdr"><polyline points="6 9 12 15 18 9" data-page-node-id="SDANx4hGFHkrzDeRIsQQMp"/></svg>
+    </div>
+    <div class="fold-body" id="fold-data" style="display:none" data-page-node-id="XgJRtcEEMbJYqf6ZE6gAbj">
+      <div class="setting-row" style="cursor:pointer" id="exportData" data-page-node-id="5vNvyTDaMUbvAxGfJAXjt0">
+        <div data-page-node-id="D8C7e6Qq0qszaLj2rrmf17"><div class="setting-label" data-page-node-id="NvDoYqCGEz2rPgMDvtAEv0">导出数据</div><div class="setting-desc" data-page-node-id="nBvej9TUHssDu54cNsTHsW">将卡片和账单数据导出为JSON文件</div></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="color:var(--text3)" data-page-node-id="xaq52V49Tjk9yUARsMbpyo"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" data-page-node-id="EVz8ySeZtQ108geGdmbM1p"/></svg>
+      </div>
+      <div class="setting-row" style="cursor:pointer" id="importData" data-page-node-id="7xA5lYSsR7GxIsCk8IyG3E">
+        <div data-page-node-id="7aDIjhnEv7lwgk8DUh70L1"><div class="setting-label" data-page-node-id="WuRx2CkJHepIq055xPILtY">导入数据</div><div class="setting-desc" data-page-node-id="WDOxFa1VSB2RAVVbfF5GkT">从JSON文件恢复卡片和账单数据</div></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="color:var(--text3)" data-page-node-id="BlqLOA0np6ZkbntBZhIg6o"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" data-page-node-id="6it3QPpFRQQOBH38QZqX7w"/></svg>
+      </div>
+      <div class="setting-row" style="cursor:pointer" id="clearData" data-page-node-id="X88uJu9gGcc7TyKn153bYu">
+        <div data-page-node-id="6FTA25grRvOmaN9J9Aanbn"><div class="setting-label" style="color:var(--red)" data-page-node-id="BYOVOp1VRGusG52azlFf8R">清除所有数据</div><div class="setting-desc" data-page-node-id="XQ0DxI1GbKMYECvxnBnAGW">删除所有卡片和账单数据（不可恢复）</div></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="color:var(--red)" data-page-node-id="mKHEyRA5l2oI3MHVjkHR2g"><polyline points="3 6 5 6 21 6" data-page-node-id="Pe27GU6D4a9PsPHYnbt6QV"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" data-page-node-id="mSPlJAJR2Ih7EzAYuJeXQQ"/></svg>
+      </div>
+    </div>
+    <input type="file" id="importFileInput" accept=".json" style="display:none" data-page-node-id="kNDXq3b05ICxNOinqOTNXi">
+    <div style="height:80px" data-page-node-id="XZrxzADIsY3td506Xyt6wg"></div>
+  </div>
+  <div class="bottom-btn" data-page-node-id="LNQAOVZoeuGtUltBF3LLIE">
+    <button id="saveSettingsBtn" data-page-node-id="s5Fn34pmnhAizohBWbwr54">保存设置</button>
+  </div>
+</div>
+
+<!-- Repay Modal -->
+<div class="modal-overlay" id="repayModal" data-page-node-id="yWNg5SS4KHYMRnnIX6rVAT">
+  <div class="modal-content" data-page-node-id="DWVO38qM06uN1524xL5JR8">
+    <div class="modal-header" id="repayModalTitle" data-page-node-id="T1c0rS06KjECECuK5ihHyB">确认还款</div>
+    <div class="modal-body" data-page-node-id="hpllPD7fFNyvwhDUoUTiFv">
+      <div class="repay-options" data-page-node-id="2JUvcUhUaFEJCHZEewT12y">
+        <div class="repay-option active" data-value="full" data-page-node-id="yfr0yt3GYAw6u1UmjIzlMO">
+          <input type="radio" name="repayType" value="full" checked data-page-node-id="xeLvxkKx0deDDPfSALjzN4">
+          <div data-page-node-id="fG4ZgykUygI3meJOrPCyeg"><div style="font-weight:600" data-page-node-id="JDoTR6qolzkepWHg2qRViB">全额还款</div><div style="font-size:12px;color:var(--text3)" data-page-node-id="s5U6j7DusgGBN6xXDjhZAO">标记该账单为已还清</div></div>
+        </div>
+        <div class="repay-option" data-value="partial" data-page-node-id="AJ8mn0Iawen96YZeRWkgpY">
+          <input type="radio" name="repayType" value="partial" data-page-node-id="fWLtxqRmGFdJ1xvpLOXrrY">
+          <div data-page-node-id="e1RAYtEq7QbyBlul3kQLjc"><div style="font-weight:600" data-page-node-id="F3GZFnAbi8EpzZVRHI4W6Y">部分还款</div><div style="font-size:12px;color:var(--text3)" data-page-node-id="8kjOczE7ilzd2QQPsHKBEY">输入已还金额</div></div>
+        </div>
+      </div>
+      <div class="form-group" id="partialAmountGroup" style="display:none;margin-top:12px" data-page-node-id="Tfcq2EXZOauV6Ceb06a4X9">
+        <label class="form-label" data-page-node-id="yKAV23zYlznkqpfgatsUbW">已还金额</label>
+        <input type="number" class="form-input" id="partialAmount" placeholder="请输入已还金额" step="0.01" data-page-node-id="LrBf5nJ7o9zDDZOSNCEzFo">
+      </div>
+    </div>
+    <div class="modal-footer" data-page-node-id="9Uh46RII0veTPeQ8BITSg2">
+      <button class="modal-btn secondary" id="cancelRepay" data-page-node-id="gKNomkCrlpL65aB2KSMcvK">取消</button>
+      <button class="modal-btn primary" id="confirmRepay" data-page-node-id="7TkwadT54MrR3cMFFLTeOG">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Clear Data Modal -->
+<div class="modal-overlay" id="clearModal" data-page-node-id="RXkcm60hnKB3SFQQyCNAVy">
+  <div class="modal-content" data-page-node-id="X49pDnHkpkfC9dfDABiGj4">
+    <div class="modal-header" data-page-node-id="3c8XJLzEuuICdTNlC16qiC">确认清除数据</div>
+    <div class="modal-body" data-page-node-id="d70xYBdNRCO6InjZy25DzG">
+      <p style="font-size:13px;color:var(--red);line-height:1.6;font-weight:600" data-page-node-id="BOgCSnSB1KzCXsiVcV2orl">⚠️ 警告：此操作将永久删除所有卡片和账单数据！</p>
+      <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-top:6px" data-page-node-id="T6WoQ0S7LTU6ttBX1ZvDzD">删除后数据不可恢复。如果您想保留数据，请先在「设置-数据管理」中导出备份。</p>
+    </div>
+    <div class="modal-footer" data-page-node-id="gY8Nka6V8LbqbXHMpWczLB">
+      <button class="modal-btn secondary" id="cancelClear" data-page-node-id="T5dgk9J9dsSg7x6wVP62uu">取消</button>
+      <button class="modal-btn primary" id="confirmClear" style="background:var(--red)" data-page-node-id="k5IGvrSpJmeO8kFGebFTbB">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Card Modal -->
+<div class="modal-overlay" id="deleteCardModal" data-page-node-id="0a3eYzBJl8ojHXKuJzeygw">
+  <div class="modal-content" data-page-node-id="I8WlFyU7mM5gR6rVVgIoHa">
+    <div class="modal-header" data-page-node-id="GixOecVoWkAUppfDFlM0Yi">确认删除卡片</div>
+    <div class="modal-body" data-page-node-id="stm8pBduXcJRwD530tkDFN">
+      <p style="font-size:13px;color:var(--text2);line-height:1.6" data-page-node-id="BaGOLKDxMtIFODrnAnKR8G">删除后，该卡片的所有信息将不可找回。关联的账单将变为"自定义账单"。</p>
+    </div>
+    <div class="modal-footer" data-page-node-id="062zSS8GzAUvVN7d8bCfMC">
+      <button class="modal-btn secondary" id="cancelDeleteCard" data-page-node-id="4MrTiTDevKMOaBPt3TCyio">取消</button>
+      <button class="modal-btn primary" id="confirmDeleteCard" style="background:var(--red)" data-page-node-id="ouD8JQtkThS6CM2bRp8fVD">确认删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fee Progress Modal -->
+<div class="modal-overlay" id="feeProgressModal" data-page-node-id="XysDk97rkYMx0sLzeKV5bE">
+  <div class="modal-content" data-page-node-id="jTCAoGMNeFpWhGMXUcZAHp">
+    <div class="modal-header" id="feeProgressTitle" data-page-node-id="1KHlIMnxWHRVuEbNDP0HJX">填写达标情况</div>
+    <div class="modal-body" id="feeProgressBody" data-page-node-id="0lFjcn2zBrzFSBJdRI7a2x">
+      <!-- dynamic -->
+    </div>
+    <div class="modal-footer" data-page-node-id="FAZ6vekDDy8B2rf6tGmUwj">
+      <button class="modal-btn secondary" id="cancelFeeProgress" data-page-node-id="klXUYv9WpkKgP7UuXtDjfM">取消</button>
+      <button class="modal-btn primary" id="saveFeeProgress" data-page-node-id="GSQsME24nEasYlaqeOUkTX">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cycle Picker -->
+<div class="picker-overlay" id="cyclePicker" data-page-node-id="mx4OHVWjnUI9XBEmRnLIcI">
+  <div class="picker-panel" data-page-node-id="H228QyFMEOP1Y85PUjmBBB">
+    <div class="picker-header" data-page-node-id="ekuCxmAQKACCX5MnmN4wf0">
+      <button class="picker-btn cancel" id="cycleCancel" data-page-node-id="3jFhzhfj1KTiEaMJTaKNY0">取消</button>
+      <span class="picker-title" data-page-node-id="Fz0zWbWJwTlpIC0SrSmOlY">选择还款周期</span>
+      <button class="picker-btn" id="cycleConfirm" data-page-node-id="huyesTrs6kRQmwWJzxy5BO">确定</button>
+    </div>
+    <div class="picker-body" id="cyclePickerBody" data-page-node-id="oJv3rr0xi9CiOATdfMPWeB"></div>
+  </div>
+</div>
+
+
+<script>
+// ===================== Data & Constants =====================
+const BANKS = [
+  {name:'招商银行',color:'#E60012',abbr:'招行'},{name:'工商银行',color:'#B71C1C',abbr:'工行'},
+  {name:'建设银行',color:'#0A6EBE',abbr:'建行'},{name:'交通银行',color:'#0072A3',abbr:'交行'},
+  {name:'平安银行',color:'#FF6B00',abbr:'平安'},{name:'浦发银行',color:'#0047AB',abbr:'浦发'},
+  {name:'中信银行',color:'#B01E5A',abbr:'中信'},{name:'光大银行',color:'#7A2F9C',abbr:'光大'},
+  {name:'民生银行',color:'#009944',abbr:'民生'},{name:'广发银行',color:'#8B1F1F',abbr:'广发'},
+  {name:'中国银行',color:'#A71E32',abbr:'中行'},{name:'农业银行',color:'#1E8E4E',abbr:'农行'},
+  {name:'兴业银行',color:'#2E7D5B',abbr:'兴业'},{name:'华夏银行',color:'#D5001C',abbr:'华夏'},
+  {name:'邮储银行',color:'#007E3A',abbr:'邮储'}
+];
+
+// feeType -> which extra fields to show (map to element id suffix after "fg-")
+const FEE_TYPE_FIELDS = {
+  free:      [],
+  points:    ['points'],
+  amount:    ['amount'],
+  count:     ['count'],
+  required:  [],
+  both:      ['both-count','both-amount'],
+  period:    ['period'],
+  custom:    ['custom']
+};
+
+const FEE_TYPES = [
+  {value:'free',label:'😄 终生免年费'},
+  {value:'period',label:'😅 期限内免年费'},
+  {value:'count',label:'☺️ 消费次数达标免年费'},
+  {value:'amount',label:'😐 消费金额达标免年费'},
+  {value:'both',label:'😧 消费次数+金额都达标免年费'},
+  {value:'points',label:'😰 可用积分兑换年费'},
+  {value:'required',label:'😭 必缴年费（不能减免）'},
+  {value:'custom',label:'😓 自定义（以上都不能概括）'}
+];
+
+const STORAGE_KEYS = {
+  cards:'zhikaka_cards',bills:'zhikaka_bills',messages:'zhikaka_messages',
+  settings:'zhikaka_settings',lastRefresh:'zhikaka_lastRefresh'
+};
+
+let currentBillId = null;
+let currentCard = null;
+let pageStack = [];
+let pendingDeleteCardId = null;
+let currentFeeProgressCardId = null;
+let currentEditBillId = null;
+
+function $(id){return document.getElementById(id)}
+function lsGet(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch{return null}}
+function lsSet(key,val){localStorage.setItem(key,JSON.stringify(val))}
+
+// Backend sync (microservice mode)
+const API_BASE='http://127.0.0.1:5000';
+let backendAvailable=false;
+let backendChecked=false;
+
+async function checkBackend(){
+  if(backendChecked)return backendAvailable;
+  try{
+    const r=await fetch(API_BASE+'/api/health',{method:'GET',mode:'cors',signal:AbortSignal.timeout(2000)});
+    backendAvailable=r.ok;
+  }catch{backendAvailable=false}
+  backendChecked=true;
+  updateSyncStatus();
+  return backendAvailable;
+}
+
+async function syncFromBackend(){
+  if(!backendAvailable)return;
+  try{
+    const r=await fetch(API_BASE+'/api/data',{method:'GET',mode:'cors'});
+    if(!r.ok)return;
+    const data=await r.json();
+    if(data.cards)lsSet(STORAGE_KEYS.cards,data.cards);
+    if(data.bills)lsSet(STORAGE_KEYS.bills,data.bills);
+    if(data.messages)lsSet(STORAGE_KEYS.messages,data.messages);
+    if(data.settings)lsSet(STORAGE_KEYS.settings,data.settings);
+    if(data.lastRefresh)lsSet(STORAGE_KEYS.lastRefresh,data.lastRefresh);
+  }catch(e){console.log('syncFromBackend failed',e)}
+}
+
+async function syncToBackend(){
+  if(!backendAvailable)return;
+  try{
+    const payload={
+      cards:lsGet(STORAGE_KEYS.cards)||[],
+      bills:lsGet(STORAGE_KEYS.bills)||[],
+      messages:lsGet(STORAGE_KEYS.messages)||[],
+      settings:lsGet(STORAGE_KEYS.settings)||{remindTime:'09:00',remindOn:true,email:'',authCode:''},
+      lastRefresh:lsGet(STORAGE_KEYS.lastRefresh)||null
+    };
+    await fetch(API_BASE+'/api/data',{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }catch(e){console.log('syncToBackend failed',e)}
+}
+function fmtMoney(n){return '¥'+(Number(n)||0).toFixed(2)}
+function fmtDate(d){const x=new Date(d);return `${x.getMonth()+1}月${x.getDate()}日`}
+function fmtDateFull(d){const x=new Date(d);return `${x.getFullYear()}.${String(x.getMonth()+1).padStart(2,'0')}.${String(x.getDate()).padStart(2,'0')}`}
+function daysUntil(d){const diff=new Date(d)-new Date();return Math.ceil(diff/86400000)}
+function todayStr(){return new Date().toISOString().split('T')[0]}
+function uuid(){return Date.now().toString(36)+Math.random().toString(36).substr(2)}
+function showToast(msg){const t=$('toast');t.innerHTML='';t.textContent=msg;t.classList.add('show');t.style.pointerEvents='none';setTimeout(()=>{t.classList.remove('show');t.style.pointerEvents='none'},2500)}
+function showUndoToast(msg,undoCallback,duration=5000){
+  const t=$('toast');
+  t.innerHTML=`<span>${msg}</span> <button class="toast-undo" style="background:none;border:none;color:#FDE68A;text-decoration:underline;cursor:pointer;font-size:13px;font-weight:600;margin-left:10px;padding:0">撤销</button>`;
+  t.classList.add('show');
+  t.style.pointerEvents='auto';
+  const timer=setTimeout(()=>{
+    t.classList.remove('show');
+    t.style.pointerEvents='none';
+    t.innerHTML='';
+  },duration);
+  const undoBtn=t.querySelector('.toast-undo');
+  if(undoBtn){
+    undoBtn.addEventListener('click',()=>{
+      clearTimeout(timer);
+      t.classList.remove('show');
+      t.style.pointerEvents='none';
+      t.innerHTML='';
+      if(undoCallback)undoCallback();
+    });
+  }
+}
+let loadingTimer=null;
+function showLoading(msg){const el=$('loading');const t=el.querySelector('.loading-text');if(loadingTimer){clearInterval(loadingTimer);loadingTimer=null}if(t){if(Array.isArray(msg)&&msg.length>0){let i=0;t.textContent=msg[0];loadingTimer=setInterval(()=>{i=(i+1)%msg.length;if(t)t.textContent=msg[i]},2500)}else{t.textContent=msg||'正在处理...'}}el.classList.remove('hidden')}
+function hideLoading(){if(loadingTimer){clearInterval(loadingTimer);loadingTimer=null}const t=$('loading').querySelector('.loading-text');if(t)t.textContent='正在处理...';$('loading').classList.add('hidden')}
+// 本地日期格式化 YYYY-MM-DD（避免 toISOString 的 UTC 时区偏移导致差一天）
+function fmtDateStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function getBank(name){return BANKS.find(b=>b.name===name)||{name,abbr:name.substr(0,2),color:'#64748B'}}
+function fmtCardNo(no){return(no||'').replace(/\s/g,'').replace(/(\d{4})(?=\d)/g,'$1 ')}
+function copyText(text){if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>showToast('复制成功')).catch(()=>showToast('复制失败'))}else{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');showToast('复制成功')}catch{showToast('复制失败')}document.body.removeChild(t)}}
+
+function getData(){
+  const cards=lsGet(STORAGE_KEYS.cards)||[];
+  // 旧数据迁移
+  let migrated=false;
+  cards.forEach(c=>{
+    // 迁移1：没有 repayType 的旧卡片，将 repayDay 转为 fixed-date 模式
+    if(!c.repayType && c.repayDay){
+      c.repayType = 'fixed-date';
+      c.repayValue = c.repayDay;
+      migrated = true;
+    }
+    // 迁移2：连 repayDay 都没有的更早数据
+    if(!c.repayType && !c.repayDay && c.billDay){
+      c.repayType = 'fixed-date';
+      c.repayValue = ((parseInt(c.billDay)+19)%28)||8;
+      c.repayDay = c.repayValue; // 保留兼容
+      migrated = true;
+    }
+  });
+  if(migrated) saveData('cards',cards);
+  return{
+    cards:cards,
+    bills:lsGet(STORAGE_KEYS.bills)||[],
+    messages:lsGet(STORAGE_KEYS.messages)||[],
+    settings:lsGet(STORAGE_KEYS.settings)||{remindTime:'09:00',remindOn:true,email:'',authCode:''},
+    lastRefresh:lsGet(STORAGE_KEYS.lastRefresh)||null
+  }
+}
+function saveData(key,val){
+  lsSet(STORAGE_KEYS[key],val);
+  // 如果后端在线，同步写入
+  syncToBackend();
+}
+
+function addMessage(title,content){
+  const msgs=lsGet(STORAGE_KEYS.messages)||[];
+  msgs.unshift({id:uuid(),title,content,date:new Date().toISOString(),read:false});
+  saveData('messages',msgs);
+  updateMsgBadge();
+}
+function updateMsgBadge(){
+  const msgs=lsGet(STORAGE_KEYS.messages)||[];
+  const unread=msgs.filter(m=>!m.read).length;
+  const badge=$('msgBadge');
+  if(unread>0){badge.classList.add('show')}else{badge.classList.remove('show')}
+}
+
+// ===================== Navigation =====================
+function openPage(id){
+  pageStack.push(id);
+  $(id).classList.add('show');
+  $('pageOverlay').classList.add('show');
+}
+function closePage(){
+  const id=pageStack.pop();
+  if(id)$(id).classList.remove('show');
+  if(pageStack.length===0)$('pageOverlay').classList.remove('show');
+  if(id==='manualBillPage')currentEditBillId=null;
+}
+document.querySelectorAll('[data-back]').forEach(btn=>{btn.addEventListener('click',closePage);});
+$('pageOverlay').addEventListener('click',()=>{if(pageStack.length>0)closePage();});
+
+// ===================== Home Page =====================
+function renderHome(){
+  advanceRecurringBills();
+  const {cards,bills,lastRefresh}=getData();
+  if(lastRefresh){
+    const d=new Date(lastRefresh);
+    $('lastRefresh').textContent=`最后刷新 ${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }else{$('lastRefresh').textContent='尚未刷新';}
+
+  // 近期应还金额：≤30天内到期的未还账单金额总和
+  const today30=new Date();
+  let totalDue=0;
+  bills.forEach(b=>{
+    if(b.status!=='paid'){
+      const days=daysUntil(b.dueDate);
+      if(days<=30)totalDue+=Math.max(0,(b.amount||0)-(b.paidAmount||0));
+    }
+  });
+  $('totalDue').textContent=fmtMoney(totalDue);
+
+  // 今日距最后还款日：统一汇总（卡包卡片 + 未还账单）
+  const todayForRepay=new Date();todayForRepay.setHours(0,0,0,0);
+  const repayDaysItems=getAllRepayItems(todayForRepay);
+
+  if(cards.length===0&&bills.filter(b=>b.status!=='paid').length===0){
+    $('repayDaysNum').textContent='--';
+    $('bestRepayName').textContent='请先录入卡片/账单';
+    $('bestRepayLogo').style.background='#94A3B8';
+    $('bestRepayLogo').textContent='?';
+  }else if(repayDaysItems.length===0){
+    // 7 日内已无待还（均已确认还款/已还清）→ 显示暂无，不做跨窗口 fallback（避免拉出远超 7 天的还款日）
+    $('repayDaysNum').textContent='--';
+    $('bestRepayName').textContent='暂无需提醒';
+    $('bestRepayLogo').style.background='#94A3B8';
+    $('bestRepayLogo').textContent='?';
+  }else{
+    const nearest=repayDaysItems[0];
+    $('repayDaysNum').textContent=nearest.days;
+    $('bestRepayName').textContent=nearest.shortName;
+    $('bestRepayLogo').style.background=nearest.color;
+    $('bestRepayLogo').textContent=nearest.logoText;
+  }
+
+  if(cards.length===0){
+    $('freeDaysNum').textContent='--';
+    $('bestFreeName').textContent='请先录入卡片';
+    $('bestFreeLogo').style.background='#94A3B8';
+    $('bestFreeLogo').textContent='?';
+  }else{
+    const best=getBestFreeCard(cards);
+    if(best){
+      $('freeDaysNum').textContent=best.days;
+      $('bestFreeName').textContent=best.bank.abbr;
+      $('bestFreeLogo').style.background=best.bank.color;
+      $('bestFreeLogo').textContent=best.bank.abbr[0];
+    }
+  }
+
+  const list=$('billList');
+  list.innerHTML='';
+  if(bills.length===0){
+    list.innerHTML=`<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><path d="M13 8h4M13 12h4M13 16h4M9 8h.01M9 12h.01M9 16h.01"/></svg>
+      <p>暂无账单</p><p style="font-size:12px;margin-top:4px">点击"录账"录入或"刷新"拉取邮箱账单</p>
+      <div style="margin-top:14px;display:flex;gap:8px;justify-content:center">
+        <button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$('btnManualBill').click()">录账</button>
+        <button class="btn" style="font-size:13px;padding:7px 14px;background:var(--surface);color:var(--text);border:1px solid var(--border)" onclick="$('btnRefresh').click()">刷新拉取</button>
+      </div>
+    </div>`;
+    $('billCount').textContent='0 笔';
+    return;
+  }
+
+  const sorted=[...bills].sort((a,b)=>{
+    if(a.status==='paid'&&b.status!=='paid')return 1;
+    if(a.status!=='paid'&&b.status==='paid')return -1;
+    return new Date(a.dueDate)-new Date(b.dueDate);
+  });
+
+  let activeCount=0;
+  sorted.forEach(bill=>{
+    if(bill.status!=='paid')activeCount++;
+    const card=cards.find(c=>c.id===bill.cardId);
+    let bank, nameText, logoText, logoColor, last4Text='', noteTagsHtml='';
+
+    if(bill.type==='custom'){
+      // 自定义账单：名称始终用customName，不受银行设置影响
+      bank=bill.bank?getBank(bill.bank):{name:'',abbr:'',color:'#64748B'};
+      nameText=bill.customName||'自定义账单';
+      logoText=(bill.customName||'自')[0];
+      logoColor=bank.color||'#64748B';
+      // 卡号后四位
+      const cbCardNoRaw=(bill.cardNo||'').replace(/\s/g,'');
+      last4Text=cbCardNoRaw.length>=4?cbCardNoRaw.slice(-4):'';
+      // 非必填项 → 多个橙色标签：发卡银行、持卡人、备注
+      const tags=[];
+      if(bill.bank)tags.push('<span class="bill-note-tag">'+getBank(bill.bank).name+'</span>');
+      if(bill.holderName)tags.push('<span class="bill-note-tag">'+bill.holderName+'</span>');
+      if(bill.note)tags.push('<span class="bill-note-tag">'+bill.note+'</span>');
+      noteTagsHtml=tags.join('');
+    }else if(bill.type==='credit_manual'){
+      bank=getBank(bill.bank)||{name:bill.bank||'信用卡',abbr:'信用卡',color:'#2563EB'};
+      nameText=bank.name;
+      last4Text=bill.last4||'';
+      logoText=bank.abbr[0];
+      logoColor=bank.color;
+      if(bill.note)noteTagsHtml='<span class="bill-note-tag">'+bill.note+'</span>';
+    }else{
+      // legacy credit bill linked to card
+      bank=getBank(bill.bank||(card?card.bank:''));
+      nameText=bank.name;
+      last4Text=bill.cardLast4||card?.last4||'';
+      logoText=bank.abbr[0];
+      logoColor=bank.color;
+      // Note from card
+      if(card&&card.notes)noteTagsHtml='<span class="bill-note-tag">'+card.notes+'</span>';
+    }
+
+    const days=daysUntil(bill.dueDate);
+    const dueDateObj=new Date(bill.dueDate);
+    const dueDateShort=String(dueDateObj.getMonth()+1).padStart(2,'0')+'-'+String(dueDateObj.getDate()).padStart(2,'0');
+
+    const item=document.createElement('div');
+    item.className='bill-item'+(bill.status==='paid'?' paid':'');
+    item.dataset.billId=bill.id;
+    item.dataset.billType=bill.type||'';
+    if(bill.cardId)item.dataset.cardId=bill.cardId;
+
+    let actionBtn='',amountHtml='',dueHtml='';
+    if(bill.status==='paid'){
+      const paidLabel=bill.type==='custom'?'账单已还清':'本期账单已还清';
+      amountHtml='<div class="bill-item-amount paid">'+paidLabel+'</div>';
+      actionBtn='<button class="action-btn btn-outline" data-action="unpay" data-id="'+bill.id+'">撤销</button>';
+    }else if(bill.status==='partial'){
+      const remain=(bill.amount||0)-(bill.paidAmount||0);
+      amountHtml='<div class="bill-item-amount">'+fmtMoney(remain)+'</div>';
+      actionBtn='<button class="action-btn btn-primary" data-action="repay" data-id="'+bill.id+'">还款</button>';
+    }else{
+      amountHtml='<div class="bill-item-amount">'+fmtMoney(bill.amount)+'</div>';
+      actionBtn='<button class="action-btn btn-primary" data-action="repay" data-id="'+bill.id+'">还款</button>';
+    }
+
+    // Due info: 大号数字 + 天后到期(同行) + 日期(下方)
+    if(bill.status==='paid'){
+      dueHtml='<div class="bill-item-due"><div class="bill-item-due-label" style="color:var(--green)">已还清</div></div>';
+    }else if(days<=-1){
+      dueHtml='<div class="bill-item-due"><div class="bill-item-due-main"><div class="bill-item-due-num urgent">'+days+'</div><div class="bill-item-due-label urgent">天已逾期</div></div><div class="bill-item-due-date">'+dueDateShort+'</div></div>';
+    }else if(days<=3){
+      dueHtml='<div class="bill-item-due"><div class="bill-item-due-main"><div class="bill-item-due-num urgent">'+days+'</div><div class="bill-item-due-label urgent">天后到期</div></div><div class="bill-item-due-date">'+dueDateShort+'</div></div>';
+    }else{
+      dueHtml='<div class="bill-item-due"><div class="bill-item-due-main"><div class="bill-item-due-num">'+days+'</div><div class="bill-item-due-label">天后到期</div></div><div class="bill-item-due-date">'+dueDateShort+'</div></div>';
+    }
+
+    const last4Html=last4Text?'<span class="bill-card-no">['+last4Text+']</span>':'';
+
+    item.innerHTML='<button class="bill-delete-x" data-delete-bill="'+bill.id+'" title="删除">✕</button>'+
+      '<div class="bill-item-row1">'+
+        '<div class="bill-logo" style="background:'+logoColor+'">'+logoText+'</div>'+
+        '<div class="bill-info" style="flex:1;min-width:0">'+
+          '<div class="bill-header"><span class="bill-name">'+nameText+'</span>'+(last4Html?' '+last4Html:'')+'</div>'+
+        '</div>'+
+        noteTagsHtml+
+      '</div>'+
+      '<div class="bill-item-row2">'+
+        amountHtml+
+        dueHtml+
+        '<div class="bill-action">'+actionBtn+'</div>'+
+      '</div>';
+
+    list.appendChild(item);
+  });
+
+  // X delete button click
+  list.querySelectorAll('[data-delete-bill]').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      const billId=this.dataset.deleteBill;
+      showConfirmDialog('确认删除？','删除后不可恢复，是否继续？','删除','var(--red)',function(){
+        const data=getData();
+        data.bills=data.bills.filter(b=>b.id!==billId);
+        saveData('bills',data.bills);
+        showToast('账单已删除');
+        renderHome();
+      });
+    });
+  });
+
+  // Click on bill item for edit or card detail
+  list.querySelectorAll('.bill-item').forEach(item=>{
+    item.addEventListener('click',function(e){
+      // Don't trigger on action buttons or delete X
+      if(e.target.closest('[data-action]'))return;
+      if(e.target.closest('[data-delete-bill]'))return;
+
+      const billId=item.dataset.billId;
+      const billType=item.dataset.billType;
+      const cardId=item.dataset.cardId;
+
+      if(billType==='custom'||billType==='credit_manual'){
+        // Edit bill (Modification 6)
+        editBill(billId);
+      }else if(cardId){
+        // Go to card detail (Modification 7)
+        showCardDetail(cardId);
+      }
+    });
+  });
+
+  $('billCount').textContent=activeCount+' 笔待还 / '+bills.length+' 笔总账单';
+}
+
+// ===================== 免息期核心算法 =====================
+// 获取某卡"下一个账单日"（今天消费将记入此账单）
+function getNextBillDay(card, today){
+  const B=parseInt(card.billDay)||1;
+  let d=new Date(today.getFullYear(),today.getMonth(),B);
+  if(d<=today) d=new Date(today.getFullYear(),today.getMonth()+1,B); // 本月账单日已过→取下月
+  return d; // 下一个还没到的账单日
+}
+// 某账单日对应的还款日
+// 固定日期：还款日>=账单日则当月，否则次月
+// 固定天数：账单日+N天
+function getRepayForBill(card, billDate){
+  if(card.repayType==='fixed-days'){
+    const days=parseInt(card.repayValue)||20;
+    const repay=new Date(billDate);
+    repay.setDate(billDate.getDate()+days);
+    return repay;
+  }else{
+    // fixed-date
+    const R=parseInt(card.repayValue)||1;
+    const B=billDate.getDate();
+    if(R>=B){
+      return new Date(billDate.getFullYear(),billDate.getMonth(),R);
+    }else{
+      return new Date(billDate.getFullYear(),billDate.getMonth()+1,R);
+    }
+  }
+}
+// 今日距最后还款日：根据卡包已录入信息，计算每张卡最近一期还款日距今天的天数
+// 逻辑：找到最近已出账单对应的还款日，与今天做差
+function getDaysToRepay(card, today){
+  if(!card.repayType||!card.billDay)return null;
+  const info=getLatestBillInfo(card,today);
+  // 取还款日（模糊期取上一期，因为本期账单可能还没出）
+  let repayDate;
+  if(info.ambiguous){
+    repayDate=info.prevRepayDate;
+  }else{
+    repayDate=info.repayDate;
+  }
+  const diff=Math.ceil((repayDate-today)/86400000);
+  return {days:diff, repayDate:repayDate};
+}
+// 统一还款日提醒：汇总卡包卡片 + 未还账单（信用卡/自定义）的还款日
+function getAllRepayItems(today){
+  const {cards,bills}=getData();
+  const dismissed=lsGet('zhikaka_dismissed_repay')||{};
+  const paidCardIds=new Set();
+  bills.forEach(b=>{if(b.status==='paid'&&b.cardId)paidCardIds.add(b.cardId);});
+
+  const items=[];
+  const cardCovered=new Map(); // cardId -> repayDateStr
+
+  // Source 1: 卡包卡片（按还款规则计算）
+  cards.forEach(card=>{
+    if(!card.repayType)return;
+    const result=getDaysToRepay(card,today);
+    if(!result||result.days>7)return;
+    if(paidCardIds.has(card.id))return;
+    const repayDateStr=result.repayDate.toISOString().split('T')[0];
+    if(dismissed[card.id]===repayDateStr)return;
+    cardCovered.set(card.id,repayDateStr);
+    const bank=getBank(card.bank);
+    items.push({
+      source:'card', id:card.id, key:card.id,
+      name:bank.name+' '+(card.last4?'['+card.last4+']':''),
+      shortName:bank.abbr, logoText:bank.abbr[0], color:bank.color,
+      days:result.days, repayDate:result.repayDate, repayDateStr
+    });
+  });
+
+  // Source 2: 未还账单（直接用dueDate）
+  bills.forEach(bill=>{
+    if(bill.status==='paid')return;
+    if(!bill.dueDate)return;
+    const due=new Date(bill.dueDate);due.setHours(0,0,0,0);
+    const diff=Math.ceil((due-today)/86400000);
+    if(diff>7)return;
+
+    // 智能匹配：优先用bill.cardId，同时尝试cardNo/last4匹配（覆盖可能失效的cardId）
+    let linkedCardId=bill.cardId||null;
+    let linkedCard=null;
+    // 步骤1：若bill.cardId存在，先验证对应的卡片是否真实存在
+    if(linkedCardId){
+      linkedCard=cards.find(c=>c.id===linkedCardId);
+      if(!linkedCard)linkedCardId=null; // 卡片已删，清空
+    }
+    // 步骤2：若无有效cardId，用cardNo/last4智能匹配
+    if(!linkedCardId&&bill.cardNo){
+      const rawNo=bill.cardNo.replace(/\s/g,'');
+      linkedCard=cards.find(c=>c.cardNo&&(c.cardNo.replace(/\s/g,'')===rawNo));
+      if(!linkedCard){linkedCard=cards.find(c=>c.last4&&c.last4===bill.cardNo.slice(-4));}
+      if(linkedCard){linkedCardId=linkedCard.id;}
+    }
+    // 步骤3：若账单关联了有效卡片，且该卡片已在提醒列表中出现，则去重跳过
+    if(linkedCardId){
+      const card=linkedCard||cards.find(c=>c.id===linkedCardId);
+      if(card&&card.repayType){
+        const cardResult=getDaysToRepay(card,today);
+        // 只要卡片计算出了还款日且在提醒窗口内，账单就去重（不要求日期完全一致）
+        if(cardResult&&cardResult.days<=7&&cardCovered.has(linkedCardId))return;
+      }
+      // 继承卡片的过滤状态（已还/已确认已还）
+      if(paidCardIds.has(linkedCardId))return;
+      if(dismissed[linkedCardId]===bill.dueDate)return;
+    }
+    // 账单自身的确认已还
+    if(dismissed['bill_'+bill.id]===bill.dueDate)return;
+
+    let shortName,logoText,color,name;
+    if(linkedCardId){
+      const card=linkedCard||cards.find(c=>c.id===linkedCardId);
+      if(card){
+        const bank=getBank(card.bank);
+        shortName=bank.abbr; logoText=bank.abbr[0]; color=bank.color;
+        name=bank.name+' '+(card.last4?'['+card.last4+']':'');
+      }else{
+        const dn=bill.name||bill.cardNo||'信用卡';
+        shortName=dn.substring(0,2); logoText=dn[0]; color='#94A3B8';
+        name=dn;
+      }
+    }else if(bill.type==='custom'){
+      shortName=(bill.name||'自').substring(0,2);
+      logoText=(bill.name||'自')[0]; color='#10B981';
+      name=bill.name||'自定义账单';
+    }else{
+      const dn=bill.name||bill.cardNo||'账单';
+      shortName=dn.substring(0,2); logoText=dn[0]; color='#94A3B8';
+      name=dn;
+    }
+    items.push({
+      source:'bill', id:bill.id, key:'bill_'+bill.id,
+      name, shortName, logoText, color,
+      days:diff, repayDate:due, repayDateStr:bill.dueDate,
+      amount:bill.amount||0, cardId:linkedCardId||null
+    });
+  });
+
+  items.sort((a,b)=>a.days-b.days);
+  return items;
+}
+// 今日免息：今天消费→记入下一期账单→该期还款日 - 今天
+function getTodayFreeDays(card, today){
+  if(!card.repayType)return null;
+  const nextBill=getNextBillDay(card,today);
+  const repay=getRepayForBill(card,nextBill);
+  return {days:Math.ceil((repay-today)/86400000),repayDate:repay,billDate:nextBill};
+}
+
+// 获取最近已出账单日（用于从卡包选卡时推算还款日）
+// 返回 { billDate: Date, ambiguous: boolean, prevBillDate: Date, prevRepayDate: Date, curBillDate: Date, curRepayDate: Date }
+// 模糊期规则（用户定义）：账单日当天 ≤ T ≤ 账单日+3天，弹窗让用户选择
+// T < 账单日 → 上月已出；T > 账单日+3 → 本月已出
+function getLatestBillInfo(card, today){
+  const B=parseInt(card.billDay)||1;
+  // 本月账单日
+  const curBill=new Date(today.getFullYear(),today.getMonth(),B);
+  // 上月账单日
+  const prevBill=new Date(today.getFullYear(),today.getMonth()-1,B);
+
+  const curRepay=getRepayForBill(card,curBill);
+  const prevRepay=getRepayForBill(card,prevBill);
+
+  const dayOfToday=today.getDate();
+  const diffAfterBill=dayOfToday-B; // 今天在账单日后第几天（0=当天，负数=还没到）
+
+  if(diffAfterBill>=0 && diffAfterBill<=3){
+    // 模糊期：账单日当天及其后3天内，银行可能还没出账
+    return { ambiguous:true, prevBillDate:prevBill, prevRepayDate:prevRepay, curBillDate:curBill, curRepayDate:curRepay };
+  }else if(diffAfterBill>3){
+    // 账单日后超过3天，银行已出账 → 本月账单
+    return { ambiguous:false, billDate:curBill, repayDate:curRepay, prevBillDate:prevBill, prevRepayDate:prevRepay, curBillDate:curBill, curRepayDate:curRepay };
+  }else{
+    // 还没到账单日（diffAfterBill < 0）→ 上月已出
+    return { ambiguous:false, billDate:prevBill, repayDate:prevRepay, prevBillDate:prevBill, prevRepayDate:prevRepay, curBillDate:curBill, curRepayDate:curRepay };
+  }
+}
+// 最长免息：账单日当天消费→记入下一期账单→从账单日到该期还款日的天数
+function getBestFreeCard(cards){
+  if(!cards||cards.length===0)return null;
+  const today=new Date();
+  let best=null;
+  cards.forEach(card=>{
+    if(!card.repayType)return;
+    const result=getTodayFreeDays(card,today);
+    if(result&&(!best||result.days>best.days))best={card,bank:getBank(card.bank),...result};
+  });
+  return best;
+}
+
+function toggleFreeLearn(){
+  const btn=$('freeLearnBtn');
+  const content=$('freeLearnContent');
+  if(content.style.display==='none'){
+    content.style.display='block';
+    btn.textContent='收起 <<';
+  }else{
+    content.style.display='none';
+    btn.textContent='点我学习享受更长免息期 >>';
+  }
+}
+function renderFreeDetail(){
+  const {cards}=getData();
+  const list=$('freeDetailList');
+  if(cards.length===0){list.innerHTML='<div class="empty-state"><p>请先录入卡片</p><div style="margin-top:14px"><button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$(\'addCardBtn\').click()">+ 录入卡片</button></div></div>';return;}
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const items=cards.filter(c=>c.repayType).map(card=>{
+    const bank=getBank(card.bank);
+    const todayResult=getTodayFreeDays(card,today);
+    return{card,bank,todayDays:todayResult?.days||0,todayRepay:todayResult?.repayDate,todayBill:todayResult?.billDate};
+  }).sort((a,b)=>b.todayDays-a.todayDays);
+
+  function fmtYMD(d){
+    if(!d)return'';
+    return d.getFullYear()+'/'+(String(d.getMonth()+1).padStart(2,'0'))+'/'+String(d.getDate()).padStart(2,'0');
+  }
+
+  list.innerHTML=items.map((item,i)=>{
+    const c=item.card;
+    // 算法说明文字
+    let desc='';
+    if(item.todayBill&&item.todayRepay){
+      desc=`今日消费将计入${fmtYMD(item.todayBill)}账单日账单<br>在${fmtYMD(item.todayRepay)}还款，将获得${item.todayDays}天免息期`;
+    }
+    return`<div class="if-item" data-card-id="${c.id}" style="align-items:center;padding:14px;cursor:pointer">
+      <div class="bill-logo" style="background:${item.bank.color};width:36px;height:36px;flex-shrink:0">${item.bank.abbr[0]}</div>
+      <div class="if-info" style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:600">${item.bank.name} ${c.last4}</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.6">${desc}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;margin-left:8px">
+        <div style="font-size:22px;font-weight:700;color:var(--text)">${item.todayDays}<span style="font-size:15px;font-weight:400">天</span></div>
+        <div style="font-size:11px;color:var(--text3)">今日免息期</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.if-item').forEach(item=>{
+    item.addEventListener('click',()=>showCardDetail(item.dataset.cardId));
+  });
+}
+
+// ===================== Repay Days Detail =====================
+function renderRepayDaysDetail(){
+  const {cards,bills}=getData();
+  const list=$('repayDaysList');
+  const today=new Date();today.setHours(0,0,0,0);
+  const items=getAllRepayItems(today);
+
+  if(cards.length===0&&bills.filter(b=>b.status!=='paid').length===0){
+    list.innerHTML='<div class="empty-state"><p>请先录入卡片或账单</p><div style="margin-top:14px;display:flex;gap:8px;justify-content:center"><button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$(\'addCardBtn\').click()">+ 录入卡片</button><button class="btn" style="font-size:13px;padding:7px 14px;background:var(--surface);color:var(--text);border:1px solid var(--border)" onclick="$(\'btnManualBill\').click()">录账</button></div></div>';return;
+  }
+  if(items.length===0){
+    list.innerHTML='<div class="empty-state"><p>暂无需提醒</p><p style="font-size:12px;margin-top:4px">最近还款日距今较远（超 7 天），点击下方查看详情或刷新拉取</p><div style="margin-top:14px"><button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$(\'btnRefresh\').click()">刷新拉取</button></div></div>';return;
+  }
+
+  list.innerHTML=items.map(item=>{
+    const days=item.days;
+    const repayDateShort=String(item.repayDate.getMonth()+1).padStart(2,'0')+'-'+String(item.repayDate.getDate()).padStart(2,'0');
+    // 提取尾号与显示名称
+    const nameMatch=item.name.match(/\[(.*?)\]/);
+    const last4=nameMatch?nameMatch[1]:'';
+    const displayName=item.name.replace(/\s*\[.*?\]\s*$/,'');
+    // 天数数字、后缀、颜色
+    let daysColor='var(--text)';
+    let daysNum='', daysSuffix='', daysNumSize='26px';
+    if(days<=-1){daysColor='var(--red)';daysNum=String(Math.abs(days));daysSuffix='天已逾期';}
+    else if(days===0){daysColor='var(--red)';daysNum='今日到期';daysSuffix='';daysNumSize='20px';}
+    else{daysNum=String(days);daysSuffix='天后到期';if(days<=3)daysColor='var(--orange)';}
+    const confirmBtnHtml='<button class="action-btn btn-primary" style="flex-shrink:0;font-size:12px;padding:5px 14px" data-confirm-repay="'+item.key+'" data-source="'+item.source+'" data-repay-date="'+item.repayDateStr+'">确认已还</button>';
+    const navigateAttr=item.source==='card'?'data-card-id="'+item.id+'"':'data-bill-id="'+item.id+'"';
+    return`<div class="if-item" ${navigateAttr} style="padding:14px;cursor:pointer;display:flex;align-items:center;gap:10px">
+      <div class="bill-logo" style="background:${item.color};width:36px;height:36px;flex-shrink:0">${item.logoText}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:15px;font-weight:600;color:var(--text)">${displayName} <span style="font-size:12px;color:var(--text3);font-weight:400">[${last4}]</span></div>
+      </div>
+      <div style="text-align:right;margin-right:4px;flex-shrink:0">
+        <div style="line-height:1.1">
+          <span style="font-size:${daysNumSize};font-weight:700;color:${daysColor}">${daysNum}</span>
+          ${daysSuffix?`<span style="font-size:14px;color:${daysColor};font-weight:500">${daysSuffix}</span>`:''}
+        </div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">${repayDateShort}</div>
+      </div>
+      ${confirmBtnHtml}
+    </div>`;
+  }).join('');
+
+  // 绑定"确认已还"按钮点击事件
+  list.querySelectorAll('[data-confirm-repay]').forEach(btn=>{
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      const key=this.dataset.confirmRepay;
+      const source=this.dataset.source;
+      const repayDate=this.dataset.repayDate;
+      const isCard=source==='card';
+      showConfirmDialog('确认已还？','点击确认后，本还款周期将不再提醒该还款日。','确认已还','var(--primary)',function(){
+        const dismissed=lsGet('zhikaka_dismissed_repay')||{};
+        dismissed[key]=repayDate;
+        lsSet('zhikaka_dismissed_repay',dismissed);
+        showUndoToast('已确认还款，本周期不再提醒',function(){
+          const d=lsGet('zhikaka_dismissed_repay')||{};
+          delete d[key];
+          lsSet('zhikaka_dismissed_repay',d);
+          renderRepayDaysDetail();
+          renderHome();
+          showToast('已撤销');
+        });
+        renderRepayDaysDetail();
+        renderHome();
+      });
+    });
+  });
+
+  // 点击跳转（卡片→卡片详情，账单→编辑账单）
+  list.querySelectorAll('.if-item').forEach(item=>{
+    item.addEventListener('click',function(e){
+      if(e.target.closest('[data-confirm-repay]'))return;
+      const cardId=this.dataset.cardId;
+      const billId=this.dataset.billId;
+      if(cardId){showCardDetail(cardId);}
+      else if(billId){editBill(billId);}
+    });
+  });
+}
+
+// ===================== Due Detail =====================
+function renderDueDetail(){
+  const {bills}=getData();
+  // 按天数段统计未还账单金额：≤3天、≤7天、≤15天、≤30天
+  let amt3=0, amt7=0, amt15=0, amt30=0;
+  bills.forEach(b=>{
+    if(b.status!=='paid'){
+      const days=daysUntil(b.dueDate);
+      const remain=Math.max(0,(b.amount||0)-(b.paidAmount||0));
+      if(days<=3)  amt3+=remain;
+      if(days<=7)  amt7+=remain;
+      if(days<=15) amt15+=remain;
+      if(days<=30) amt30+=remain;
+    }
+  });
+  $('rdTotal').textContent=fmtMoney(amt3);
+  $('rdPaid').textContent=fmtMoney(amt7);
+  $('rdRemaining').textContent=fmtMoney(amt15);
+  $('rdNearest').textContent=fmtMoney(amt30);
+}
+
+function getRepayRuleLabel(c){
+  if(c.repayType==='fixed-days'){
+    return `账单日后${c.repayValue||20}天还款`;
+  }
+  return `每月${c.repayValue||1}日还款`;
+}
+
+// ===================== Wallet =====================
+function renderWallet(){
+  const {cards}=getData();
+  const list=$('walletList');
+  const summary=$('walletSummary');
+  if(cards.length===0){
+    list.innerHTML=`<div class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <p>暂无卡片</p><p style="font-size:12px;margin-top:4px">点击右上角 + 添加</p>
+      <div style="margin-top:14px"><button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$('addCardBtn').click()">+ 录入卡片</button></div>
+    </div>`;
+    summary.style.display='none';
+    return;
+  }
+  summary.style.display='flex';
+
+  // Sort by credit limit descending
+  const sorted=[...cards].sort((a,b)=>(b.creditLimit||0)-(a.creditLimit||0));
+
+  const totalLimit=sorted.reduce((sum,c)=>sum+(parseFloat(c.creditLimit)||0),0);
+  summary.innerHTML=`<span class="wallet-summary-count">共 ${sorted.length} 张信用卡</span>
+    <span class="wallet-summary-total">额度合计 ${fmtMoney(totalLimit)}</span>`;
+
+  list.innerHTML=sorted.map(c=>{
+    const bank=getBank(c.bank);
+    const repayLabel=getRepayRuleLabel(c);
+    const noteLine=c.notes?`<div class="wallet-card-note">备注：${c.notes}</div>`:'';
+    return`<div class="wallet-card" data-id="${c.id}">
+      <div class="wallet-card-logo" style="background:${bank.color}">${bank.abbr[0]}</div>
+      <div class="wallet-card-info">
+        <div class="wallet-card-name">${bank.name}${c.holderName?' · '+c.holderName:''}</div>
+        <div class="wallet-card-detail">尾号 ${c.last4} · 账单日 ${c.billDay}日 · ${repayLabel} · 额度 ${fmtMoney(c.creditLimit||0)}</div>
+        ${noteLine}
+      </div>
+      <div class="wallet-card-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="color:var(--text3)"><path d="M9 18l6-6-6-6"/></svg></div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.wallet-card').forEach(card=>{
+    card.addEventListener('click',()=>showCardDetail(card.dataset.id));
+  });
+}
+
+function showCardDetail(id){
+  const {cards}=getData();
+  const card=cards.find(c=>c.id===id);
+  if(!card)return;
+  currentCard=card;
+  const bank=getBank(card.bank);
+  const ft=FEE_TYPES.find(f=>f.value===card.annualFeeType);
+  const body=$('cardDetailBody');
+
+  // Build fee detail lines
+  let feeExtraLines='';
+  if(card.annualFeeType==='points'&&card.feePoints){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">所需积分</span><span class="card-detail-value">${Number(card.feePoints).toLocaleString()} 积分</span></div>`;
+  }
+  if(card.annualFeeType==='amount'&&card.feeThreshold){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">需消费金额</span><span class="card-detail-value">${fmtMoney(card.feeThreshold)}</span></div>`;
+  }
+  if(card.annualFeeType==='count'&&card.feeCount){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">需刷卡次数</span><span class="card-detail-value">${card.feeCount} 次/年</span></div>`;
+  }
+  if(card.annualFeeType==='both'&&(card.feeBothCount||card.feeBothThreshold)){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">需刷卡次数</span><span class="card-detail-value">${card.feeBothCount||'--'} 次/年</span></div>`;
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">需消费金额</span><span class="card-detail-value">${card.feeBothThreshold?fmtMoney(card.feeBothThreshold):'--'}</span></div>`;
+  }
+  if(card.annualFeeType==='period'&&card.feeDeadline){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">免年费截止</span><span class="card-detail-value">${card.feeDeadline}</span></div>`;
+  }
+  if(card.annualFeeType==='custom'&&card.feeCustomRule){
+    feeExtraLines+=`<div class="card-detail-row"><span class="card-detail-label">自定义规则</span><span class="card-detail-value">${card.feeCustomRule}</span></div>`;
+  }
+
+  body.innerHTML=`
+    ${card.frontPhoto?`<img src="${card.frontPhoto}" class="card-detail-photo">`:''}
+    ${card.backPhoto?`<img src="${card.backPhoto}" class="card-detail-photo">`:''}
+    <div style="background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:12px">
+      <div class="card-detail-row"><span class="card-detail-label">发卡银行</span><span class="card-detail-value">${bank.name}</span></div>
+      <div class="card-detail-row"><span class="card-detail-label">银行卡号</span><span class="card-detail-value" style="display:flex;align-items:center;gap:8px">${fmtCardNo((card.cardNo||'').replace(/\d(?=\d{4})/g,'*'))}<button onclick="copyText('${card.cardNo||''}')" style="background:var(--primary-light);color:var(--primary);border:none;border-radius:4px;padding:2px 8px;font-size:11px;cursor:pointer">复制</button></span></div>
+      ${card.holderName?`<div class="card-detail-row"><span class="card-detail-label">持卡人</span><span class="card-detail-value">${card.holderName}</span></div>`:''}
+      <div class="card-detail-row"><span class="card-detail-label">账单日</span><span class="card-detail-value">每月${card.billDay}日</span></div>
+      <div class="card-detail-row"><span class="card-detail-label">还款规则</span><span class="card-detail-value">${card.repayType==='fixed-days'?'账单日后'+card.repayValue+'天':'每月'+card.repayValue+'日'}</span></div>
+      <div class="card-detail-row"><span class="card-detail-label">信用额度</span><span class="card-detail-value">${fmtMoney(card.creditLimit||0)}</span></div>
+      <div class="card-detail-row"><span class="card-detail-label">年费类型</span><span class="card-detail-value">${ft?.label||card.annualFeeType}</span></div>
+      ${feeExtraLines}
+      <div class="card-detail-row"><span class="card-detail-label">年费金额</span><span class="card-detail-value">${fmtMoney(card.annualFeeAmount||0)}</span></div>
+      ${card.annualFeeDate?`<div class="card-detail-row"><span class="card-detail-label">收取时间</span><span class="card-detail-value">${card.annualFeeDate}</span></div>`:''}
+      ${card.notes?`<div class="card-detail-row"><span class="card-detail-label">备注</span><span class="card-detail-value">${card.notes}</span></div>`:''}
+    </div>
+    <button class="action-btn btn-primary" id="editCardBtn" style="width:100%;padding:12px;font-size:14px">编辑卡片</button>
+    <button class="delete-btn" id="deleteCardBtn">删除此卡片</button>
+  `;
+  $('editCardBtn').addEventListener('click',()=>{closePage();setTimeout(()=>editCard(card.id),300)});
+  $('deleteCardBtn').addEventListener('click',()=>{
+    pendingDeleteCardId=card.id;
+    $('deleteCardModal').classList.add('show');
+  });
+  openPage('cardDetailPage');
+}
+
+// ===================== Card Form =====================
+function initCardForm(){
+  const bankSel=$('cardBank');
+  bankSel.innerHTML='<option value="" disabled selected>请选择银行</option>'+BANKS.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+
+  const billDaySel=$('cardBillDay');
+  billDaySel.innerHTML='<option value="" disabled selected>请选择账单日（1-31）</option>'+Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}日</option>`).join('');
+  const repayDateSel=$('cardRepayValueDate');
+  repayDateSel.innerHTML='<option value="" disabled selected>请选择还款日（1-31）</option>'+Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}日</option>`).join('');
+
+  // 各家银行常见还款规则（仅供参考，以实际账单为准）
+  const BANK_REPAY_HINT={
+    '招商银行':{type:'fixed-days',value:18,label:'账单日后 18 天'},
+    '建设银行':{type:'fixed-days',value:20,label:'账单日后 20 天'},
+    '中国银行':{type:'fixed-days',value:20,label:'账单日后 20 天'},
+    '农业银行':{type:'fixed-days',value:25,label:'账单日后 25 天'},
+    '工商银行':{type:'fixed-days',value:25,label:'账单日后 25 天'},
+    '交通银行':{type:'fixed-days',value:25,label:'账单日后 25 天'},
+    '广发银行':{type:'fixed-date',value:8,label:'每月 8 号'},
+    '平安银行':{type:'fixed-days',value:18,label:'账单日后 18 天'},
+    '浦发银行':{type:'fixed-days',value:20,label:'账单日后 20 天'},
+    '中信银行':{type:'fixed-days',value:19,label:'账单日后 19 天'},
+    '光大银行':{type:'fixed-days',value:18,label:'账单日后 18 天'},
+    '民生银行':{type:'fixed-days',value:20,label:'账单日后 20 天'},
+    '兴业银行':{type:'fixed-days',value:20,label:'账单日后 20 天'},
+    '华夏银行':{type:'fixed-days',value:25,label:'账单日后 25 天'},
+    '邮储银行':{type:'fixed-days',value:20,label:'账单日后 20 天'}
+  };
+  const repayHintEl=document.createElement('div');
+  repayHintEl.id='cardRepayHint';
+  repayHintEl.className='form-hint';
+  repayHintEl.style.display='none';
+  repayHintEl.style.color='var(--primary)';
+  repayHintEl.style.marginTop='4px';
+  $('repayTypeGroup').parentNode.appendChild(repayHintEl);
+  bankSel.addEventListener('change',()=>{
+    const hint=BANK_REPAY_HINT[bankSel.value];
+    if(hint){
+      repayHintEl.textContent='💡 '+bankSel.value+' 常见规则：'+hint.label+'（仅供参考，请以实际账单为准）';
+      repayHintEl.style.display='block';
+    }else{
+      repayHintEl.style.display='none';
+    }
+  });
+
+  // 还款规则类型选择
+  const repayTypeGroup=$('repayTypeGroup');
+  repayTypeGroup.querySelectorAll('.radio-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      repayTypeGroup.querySelectorAll('.radio-item').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+      item.querySelector('input').checked=true;
+      updateRepayFields(item.dataset.value);
+    });
+  });
+
+  const feeGroup=$('feeTypeGroup');
+  feeGroup.innerHTML=FEE_TYPES.map(f=>`<div class="radio-item" data-value="${f.value}">
+    <input type="radio" name="feeType" value="${f.value}"><label>${f.label}</label>
+  </div>`).join('');
+
+  feeGroup.querySelectorAll('.radio-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      feeGroup.querySelectorAll('.radio-item').forEach(i=>i.classList.remove('active'));
+      item.classList.add('active');
+      item.querySelector('input').checked=true;
+      updateFeeFields(item.dataset.value);
+    });
+  });
+
+  function setupPhoto(boxId,inputId){
+    const box=$(boxId),input=$(inputId);
+    box.addEventListener('click',()=>input.click());
+    input.addEventListener('change',e=>{
+      const file=e.target.files[0];if(!file)return;
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        box.innerHTML=`<img src="${ev.target.result}">`;
+        box.classList.add('has-image');
+        box.dataset.img=ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  setupPhoto('frontPhotoBox','frontPhotoInput');
+  setupPhoto('backPhotoBox','backPhotoInput');
+
+  // 卡号输入自动空格
+  $('cardNo').addEventListener('input',function(e){
+    const cursor=this.selectionStart;
+    const digitsBefore=(this.value.slice(0,cursor).match(/\d/g)||[]).length;
+    const raw=this.value.replace(/\D/g,'');
+    const formatted=raw.replace(/(\d{4})(?=\d)/g,'$1 ');
+    this.value=formatted;
+    let newCursor=0,digitCount=0;
+    for(let i=0;i<formatted.length;i++){
+      if(/\d/.test(formatted[i]))digitCount++;
+      newCursor=i+1;
+      if(digitCount>=digitsBefore)break;
+    }
+    this.selectionStart=this.selectionEnd=newCursor;
+  });
+
+  // 信用卡账单录入 — 卡号自动空格
+  $('cmCardNo').addEventListener('input',function(e){
+    const cursor=this.selectionStart;
+    const digitsBefore=(this.value.slice(0,cursor).match(/\d/g)||[]).length;
+    const raw=this.value.replace(/\D/g,'');
+    const formatted=raw.replace(/(\d{4})(?=\d)/g,'$1 ');
+    this.value=formatted;
+    let newCursor=0,digitCount=0;
+    for(let i=0;i<formatted.length;i++){
+      if(/\d/.test(formatted[i]))digitCount++;
+      newCursor=i+1;
+      if(digitCount>=digitsBefore)break;
+    }
+    this.selectionStart=this.selectionEnd=newCursor;
+  });
+
+  // 信用卡账单录入 — 填充银行下拉
+  const cmBankSel=$('cmBank');
+  cmBankSel.innerHTML='<option value="">请选择银行</option>'+BANKS.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+
+  // 自定义账单 — 填充发卡银行下拉
+  const cbBankSel=$('cbBank');
+  cbBankSel.innerHTML='<option value="">请选择银行（选填）</option>'+BANKS.map(b=>`<option value="${b.name}">${b.name}</option>`).join('');
+
+  // 自定义账单高级配置 — 银行卡号自动空格
+  $('cbCardNo').addEventListener('input',function(e){
+    const cursor=this.selectionStart;
+    const digitsBefore=(this.value.slice(0,cursor).match(/\d/g)||[]).length;
+    const raw=this.value.replace(/\D/g,'');
+    const formatted=raw.replace(/(\d{4})(?=\d)/g,'$1 ');
+    this.value=formatted;
+    let newCursor=0,digitCount=0;
+    for(let i=0;i<formatted.length;i++){
+      if(/\d/.test(formatted[i]))digitCount++;
+      newCursor=i+1;
+      if(digitCount>=digitsBefore)break;
+    }
+    this.selectionStart=this.selectionEnd=newCursor;
+  });
+
+  // 信用卡账单 — 从卡包选择
+  $('cmPickCardBtn').addEventListener('click',function(){
+    const data=getData();
+    if(!data.cards||data.cards.length===0){
+      showToast('卡包中还没有卡片，请先添加');
+      return;
+    }
+    // 构建卡片列表
+    const list=$('cardPickerList');
+    list.innerHTML=data.cards.map(c=>{
+      const bank=getBank(c.bank);
+      const repayDesc=c.repayType==='fixed-days'?'账单日后'+c.repayValue+'天':'每月'+c.repayValue+'日';
+      return '<div class="picker-item" data-card-id="'+c.id+'" style="display:flex;align-items:center;gap:12px;text-align:left;padding:12px 8px;border-radius:8px;transition:background .15s" onmouseenter="this.style.background=\'var(--primary-light)\'" onmouseleave="this.style.background=\'transparent\'">'+
+        '<div class="bank-mini-logo" style="background:'+bank.color+';flex-shrink:0">'+bank.abbr[0]+'</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:14px;font-weight:600;color:var(--text)">'+bank.name+' <span style="color:var(--text3);font-weight:400;font-size:12px">['+c.last4+']</span>'+(c.holderName?'<span style="color:var(--text3);font-size:11px;margin-left:6px">'+c.holderName+'</span>':'')+'</div>'+
+          '<div style="font-size:12px;color:var(--text3);margin-top:2px">账单日'+c.billDay+'日 · '+repayDesc+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    $('cardPickerOverlay').classList.add('show');
+  });
+
+  $('cardPickerCancel').addEventListener('click',function(){
+    $('cardPickerOverlay').classList.remove('show');
+  });
+
+  $('cardPickerOverlay').addEventListener('click',function(e){
+    if(e.target===this)this.classList.remove('show');
+  });
+
+  $('cardPickerList').addEventListener('click',function(e){
+    const item=e.target.closest('[data-card-id]');
+    if(!item)return;
+    const cardId=item.dataset.cardId;
+    const data=getData();
+    const card=data.cards.find(c=>c.id===cardId);
+    if(!card)return;
+
+    // 计算还款日并填充表单
+    if(card.repayType&&card.billDay){
+      const today=new Date();
+      const info=getLatestBillInfo(card,today);
+      if(info.ambiguous){
+        // 模糊期：弹窗让用户选择上一期还是本期
+        $('cardPickerOverlay').classList.remove('show');
+        showBillPeriodChooser(card,info);
+        return;
+      }
+      // 非模糊期：直接填
+      fillCardToForm(card,info.repayDate);
+    }else{
+      // 没有账单日信息，只填银行和卡号
+      fillCardToForm(card,null);
+    }
+  });
+}
+
+// 将卡片信息填入信用卡账单表单，并关闭所有选卡弹窗
+function fillCardToForm(card, repayDate){
+  // 关闭两个可能打开的选卡弹窗
+  $('cardPickerOverlay').classList.remove('show');
+  $('billPeriodOverlay').classList.remove('show');
+  $('cmBank').value=card.bank;
+  const raw=(card.cardNo||'').replace(/\D/g,'');
+  $('cmCardNo').value=raw.replace(/(\d{4})(?=\d)/g,'$1 ');
+  if(repayDate){
+    const y=repayDate.getFullYear();
+    const m=String(repayDate.getMonth()+1).padStart(2,'0');
+    const d=String(repayDate.getDate()).padStart(2,'0');
+    $('cmDueDate').value=y+'-'+m+'-'+d;
+  }
+  // 高亮已填入的按钮
+  $('cmPickCardBtn').style.borderStyle='solid';
+  $('cmPickCardBtn').style.borderColor='var(--green)';
+  $('cmPickCardBtn').style.background='#F0FDF4';
+  $('cmPickCardBtn').style.color='var(--green)';
+  $('cmPickCardBtn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 已选：'+getBank(card.bank).abbr+' '+card.last4;
+  showToast('已从卡包填入：'+getBank(card.bank).abbr+' '+card.last4);
+}
+
+// 模糊期弹窗：让用户选择上一期还是本期账单
+// billPeriodCancel 和 billPeriodOverlay 的事件在 init 中只绑一次
+let _bpPeriodBound=false;
+function showBillPeriodChooser(card, info){
+  const fmtDate=function(d){return (d.getMonth()+1)+'月'+d.getDate()+'日';};
+  const fmtISO=function(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+  const bank=getBank(card.bank);
+  $('billPeriodContent').innerHTML=
+    '<div style="text-align:center;margin-bottom:12px;color:var(--text2);font-size:13px;line-height:1.6">'+
+      '<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">📋 刚过账单日</div>'+
+      '<div>'+bank.name+' 账单日'+card.billDay+'日刚过，银行可能尚未出账。<br>请选择要录入的账单期：</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:10px">'+
+      '<button id="bpPrev" style="padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:left;transition:all .15s">'+
+        '<div style="font-size:14px;font-weight:600;color:var(--text)">上一期账单</div>'+
+        '<div style="font-size:12px;color:var(--text2);margin-top:4px">账单日 '+fmtDate(info.prevBillDate)+' → 还款日 '+fmtDate(info.prevRepayDate)+'</div>'+
+        '<div style="font-size:11px;color:var(--text3);margin-top:2px">还款截止：'+fmtISO(info.prevRepayDate)+'</div>'+
+      '</button>'+
+      '<button id="bpCur" style="padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--card);cursor:pointer;text-align:left;transition:all .15s">'+
+        '<div style="font-size:14px;font-weight:600;color:var(--text)">本期账单（新出）</div>'+
+        '<div style="font-size:12px;color:var(--text2);margin-top:4px">账单日 '+fmtDate(info.curBillDate)+' → 还款日 '+fmtDate(info.curRepayDate)+'</div>'+
+        '<div style="font-size:11px;color:var(--amber);margin-top:2px">⚠️ 银行可能尚未出账</div>'+
+      '</button>'+
+    '</div>';
+  $('billPeriodOverlay').classList.add('show');
+
+  // 选择上一期（动态按钮，每次innerHTML重建，不会重复绑定）
+  $('bpPrev').addEventListener('click',function(){
+    $('billPeriodOverlay').classList.remove('show');
+    fillCardToForm(card,info.prevRepayDate);
+  });
+  // 选择本期
+  $('bpCur').addEventListener('click',function(){
+    $('billPeriodOverlay').classList.remove('show');
+    fillCardToForm(card,info.curRepayDate);
+  });
+  // 取消 + 点击遮罩关闭：只绑一次
+  if(!_bpPeriodBound){
+    _bpPeriodBound=true;
+    $('billPeriodCancel').addEventListener('click',function(){
+      $('billPeriodOverlay').classList.remove('show');
+    });
+    $('billPeriodOverlay').addEventListener('click',function(e){
+      if(e.target===this)this.classList.remove('show');
+    });
+  }
+}
+
+function updateRepayFields(repayType){
+  $('repayDateGroup').style.display = repayType==='fixed-date' ? '' : 'none';
+  $('repayDaysGroup').style.display = repayType==='fixed-days' ? '' : 'none';
+}
+
+function updateFeeFields(feeType){
+  // Hide all fee field groups
+  document.querySelectorAll('.fee-field-group').forEach(el=>el.classList.remove('show'));
+  // Show relevant ones
+  const fields=FEE_TYPE_FIELDS[feeType]||[];
+  fields.forEach(f=>{
+    const el=$(`fg-${f}`);
+    if(el)el.classList.add('show');
+  });
+  // 终身免年费不显示年费金额和收取时间
+  const showBase = feeType !== 'free';
+  $('feeAmountGroup').style.display = showBase ? '' : 'none';
+  $('feeDateGroup').style.display   = showBase ? '' : 'none';
+}
+
+// ===================== Custom Confirm Dialog =====================
+let _confirmCallback=null;
+
+// 通用确认弹窗：title=标题, desc=描述, okText=确认按钮文字, okColor=按钮颜色, callback=确认后回调
+function showConfirmDialog(title, desc, okText, okColor, callback){
+  $('confirmTitle').textContent=title||'确认？';
+  $('confirmDesc').textContent=desc||'';
+  $('confirmOkBtn').textContent=okText||'确认';
+  $('confirmOkBtn').style.background=okColor||'var(--red)';
+  _confirmCallback=callback||null;
+  $('confirmOverlay').classList.add('show');
+}
+
+// 绑定确认弹窗按钮事件（只绑一次）
+let _confirmDialogBound=false;
+function bindConfirmDialog(){
+  if(_confirmDialogBound)return;
+  _confirmDialogBound=true;
+  $('confirmOkBtn').addEventListener('click',function(){
+    $('confirmOverlay').classList.remove('show');
+    if(typeof _confirmCallback==='function')_confirmCallback();
+    _confirmCallback=null;
+  });
+  $('confirmCancelBtn').addEventListener('click',function(){
+    _confirmCallback=null;
+    $('confirmOverlay').classList.remove('show');
+  });
+  $('confirmOverlay').addEventListener('click',function(e){
+    if(e.target===this){
+      _confirmCallback=null;
+      this.classList.remove('show');
+    }
+  });
+}
+
+function editCard(id){
+  const {cards}=getData();
+  const card=cards.find(c=>c.id===id);
+  if(!card)return;
+  $('cardFormTitle').textContent='编辑卡片';
+  $('cardEditId').value=card.id;
+  $('cardBank').value=card.bank;
+  $('cardNo').value=fmtCardNo(card.cardNo||'');
+  $('cardHolder').value=card.holderName||'';
+  $('cardBillDay').value=card.billDay;
+  // 还款规则
+  const rType=card.repayType||'fixed-date';
+  $('repayTypeGroup').querySelectorAll('.radio-item').forEach(i=>{
+    i.classList.toggle('active',i.dataset.value===rType);
+    i.querySelector('input').checked=i.dataset.value===rType;
+  });
+  updateRepayFields(rType);
+  if(rType==='fixed-date'){
+    $('cardRepayValueDate').value=card.repayValue||'';
+    $('cardRepayValueDays').value='';
+  }else{
+    $('cardRepayValueDate').value='';
+    $('cardRepayValueDays').value=card.repayValue||'';
+  }
+  $('cardLimit').value=card.creditLimit||'';
+  $('feeAmount').value=card.annualFeeAmount||'';
+  $('feeDate').value=card.annualFeeDate||'';
+  $('feePoints').value=card.feePoints||'';
+  $('feeThreshold').value=card.feeThreshold||'';
+  $('feeCount').value=card.feeCount||'';
+  $('feeBothCount').value=card.feeBothCount||'';
+  $('feeBothThreshold').value=card.feeBothThreshold||'';
+  $('feeDeadline').value=card.feeDeadline||'';
+  $('feeCustomRule').value=card.feeCustomRule||'';
+  $('cardNotes').value=card.notes||'';
+
+  if(card.frontPhoto){$('frontPhotoBox').innerHTML=`<img src="${card.frontPhoto}">`;$('frontPhotoBox').classList.add('has-image');$('frontPhotoBox').dataset.img=card.frontPhoto;}
+  else{$('frontPhotoBox').innerHTML='<div class="placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><br>点击上传正面</div>';$('frontPhotoBox').classList.remove('has-image');}
+  if(card.backPhoto){$('backPhotoBox').innerHTML=`<img src="${card.backPhoto}">`;$('backPhotoBox').classList.add('has-image');$('backPhotoBox').dataset.img=card.backPhoto;}
+  else{$('backPhotoBox').innerHTML='<div class="placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><br>点击上传背面</div>';$('backPhotoBox').classList.remove('has-image');}
+
+  $('feeTypeGroup').querySelectorAll('.radio-item').forEach(i=>{
+    i.classList.toggle('active',i.dataset.value===card.annualFeeType);
+    i.querySelector('input').checked=i.dataset.value===card.annualFeeType;
+  });
+  updateFeeFields(card.annualFeeType);
+  openPage('cardFormPage');
+}
+
+function resetCardForm(){
+  $('cardFormTitle').textContent='新增卡片';
+  $('cardEditId').value='';
+  $('cardBank').value='';
+  $('cardNo').value='';
+  $('cardHolder').value='';
+  $('cardBillDay').value='';
+  $('cardRepayValueDate').value='';
+  $('cardRepayValueDays').value='';
+  $('cardLimit').value='';
+  $('feeAmount').value='';
+  $('feeDate').value='';
+  $('feePoints').value='';
+  $('feeThreshold').value='';
+  $('feeCount').value='';
+  $('feeBothCount').value='';
+  $('feeBothThreshold').value='';
+  $('feeDeadline').value='';
+  $('feeCustomRule').value='';
+  $('cardNotes').value='';
+  $('frontPhotoBox').innerHTML='<div class="placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><br>点击上传正面</div>';
+  $('frontPhotoBox').classList.remove('has-image');
+  $('backPhotoBox').innerHTML='<div class="placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><br>点击上传背面</div>';
+  $('backPhotoBox').classList.remove('has-image');
+  // 还款规则默认固定日期
+  $('repayTypeGroup').querySelectorAll('.radio-item').forEach((i,idx)=>{i.classList.toggle('active',idx===0);i.querySelector('input').checked=idx===0;});
+  updateRepayFields('fixed-date');
+  $('feeTypeGroup').querySelectorAll('.radio-item').forEach((i,idx)=>{i.classList.toggle('active',idx===0);i.querySelector('input').checked=idx===0;});
+  updateFeeFields('free');
+}
+
+$('addCardBtn').addEventListener('click',()=>{resetCardForm();openPage('cardFormPage');});
+
+$('saveCardBtn').addEventListener('click',()=>{
+  const bank=$('cardBank').value;
+  const cardNo=$('cardNo').value.trim().replace(/\s/g,'');
+  const billDay=$('cardBillDay').value;
+  if(!bank||!cardNo){showToast('请填写必填项');return;}
+  if(!/^\d{13,19}$/.test(cardNo)){
+    showToast('卡号格式错误（需 13-19 位数字）');
+    $('cardNo').focus();
+    return;
+  }
+  if(!billDay){showToast('请选择账单日');$('cardBillDay').focus();return;}
+  const last4=cardNo.slice(-4);
+  const feeType=$('feeTypeGroup').querySelector('.active')?.dataset.value||'free';
+  const repayType=$('repayTypeGroup').querySelector('.active')?.dataset.value||'fixed-date';
+
+  // Validate repay fields
+  if(repayType==='fixed-date'&&!$('cardRepayValueDate').value){showToast('请选择还款日');$('cardRepayValueDate').focus();return;}
+  if(repayType==='fixed-days'&&!$('cardRepayValueDays').value){showToast('请填写相隔天数');$('cardRepayValueDays').focus();return;}
+
+  // Validate required fee fields
+  const fields=FEE_TYPE_FIELDS[feeType]||[];
+  for(const f of fields){
+    if(f==='points'&&!$('feePoints').value){showToast('请填写所需积分');$('feePoints').focus();return;}
+    if(f==='amount'&&!$('feeThreshold').value){showToast('请填写需消费金额');$('feeThreshold').focus();return;}
+    if(f==='count'&&!$('feeCount').value){showToast('请填写需刷卡次数');$('feeCount').focus();return;}
+    if(f==='both-count'&&!$('feeBothCount').value){showToast('请填写需刷卡次数');$('feeBothCount').focus();return;}
+    if(f==='both-amount'&&!$('feeBothThreshold').value){showToast('请填写需消费金额');$('feeBothThreshold').focus();return;}
+    if(f==='period'&&!$('feeDeadline').value){showToast('请填写免年费截止日期');$('feeDeadline').focus();return;}
+    if(f==='custom'&&!$('feeCustomRule').value){showToast('请填写自定义规则');$('feeCustomRule').focus();return;}
+  }
+
+  const repayValue = repayType==='fixed-date'
+    ? parseInt($('cardRepayValueDate').value)||1
+    : parseInt($('cardRepayValueDays').value)||20;
+
+  const card={
+    id:$('cardEditId').value||uuid(),
+    bank,cardNo,last4,
+    holderName:$('cardHolder').value.trim(),
+    billDay:parseInt(billDay),
+    repayType,
+    repayValue,
+    repayDay:repayValue, // 保留兼容旧字段
+    creditLimit:parseFloat($('cardLimit').value)||0,
+    annualFeeType:feeType,
+    annualFeeAmount:parseFloat($('feeAmount').value)||0,
+    annualFeeDate:$('feeDate').value,
+    feePoints:parseInt($('feePoints').value)||0,
+    feeThreshold:parseFloat($('feeThreshold').value)||0,
+    feeCount:parseInt($('feeCount').value)||0,
+    feeBothCount:parseInt($('feeBothCount').value)||0,
+    feeBothThreshold:parseFloat($('feeBothThreshold').value)||0,
+    feeDeadline:$('feeDeadline').value,
+    feeCustomRule:$('feeCustomRule').value,
+    notes:$('cardNotes').value,
+    frontPhoto:$('frontPhotoBox').dataset.img||'',
+    backPhoto:$('backPhotoBox').dataset.img||'',
+    createdAt:new Date().toISOString()
+  };
+  const data=getData();
+  if($('cardEditId').value){
+    const idx=data.cards.findIndex(c=>c.id===card.id);
+    if(idx>=0)data.cards[idx]=card;
+  }else{
+    data.cards.push(card);
+  }
+  saveData('cards',data.cards);
+  showToast('保存成功');closePage();renderWallet();renderHome();
+});
+
+// ===================== Manual Bill =====================
+const CYCLE_OPTIONS=[
+  {value:0,label:'仅一次'},{value:1,label:'每月'},{value:2,label:'每2月'},
+  {value:3,label:'每3月'},{value:4,label:'每4月'},{value:5,label:'每5月'},
+  {value:6,label:'每6月'},{value:7,label:'每7月'},{value:8,label:'每8月'},
+  {value:9,label:'每9月'},{value:10,label:'每10月'},{value:11,label:'每11月'},
+  {value:12,label:'每年'}
+];
+
+let currentCycle=1;
+let currentBillType='custom';
+
+function getCycleLabel(v){if(v===undefined||v===null)return'';return CYCLE_OPTIONS.find(c=>c.value===v)?.label||'';}
+
+function openCyclePicker(){
+  const body=$('cyclePickerBody');
+  body.innerHTML=CYCLE_OPTIONS.map(c=>`<div class="picker-item ${c.value===currentCycle?'selected':''}" data-value="${c.value}">${c.label}</div>`).join('');
+  body.querySelectorAll('.picker-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      body.querySelectorAll('.picker-item').forEach(i=>i.classList.remove('selected'));
+      el.classList.add('selected');
+      currentCycle=parseInt(el.dataset.value);
+    });
+  });
+  $('cyclePicker').classList.add('show');
+}
+
+function closePickers(){
+  $('cyclePicker').classList.remove('show');
+}
+
+function updateCycleDisplay(){
+  $('cbCycleDisplay').innerHTML=`<span>${getCycleLabel(currentCycle)}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>`;
+}
+
+function resetBillForm(){
+  currentBillType='custom';
+  currentCycle=1;
+  currentEditBillId=null;
+  $('billFormTitle').textContent='录账';
+  $('cbName').value='';
+  $('cbBank').value='';
+  $('cbAmount').value='';
+  $('cbDueDate').value='';
+  $('cbCardNo').value='';
+  $('cbHolder').value='';
+  $('cbNote').value='';
+  $('cmBank').value='';
+  $('cmCardNo').value='';
+  $('cmDueDate').value='';
+  $('cmAmount').value='';
+  $('cmNote').value='';
+  // 重置"从卡包选择"按钮
+  $('cmPickCardBtn').style.borderStyle='dashed';
+  $('cmPickCardBtn').style.borderColor='var(--primary)';
+  $('cmPickCardBtn').style.background='var(--primary-light)';
+  $('cmPickCardBtn').style.color='var(--primary)';
+  $('cmPickCardBtn').innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> 从卡包选择信用卡';
+  updateCycleDisplay();
+  $('cbAdvancedSection').classList.remove('show');
+  $('cbAdvancedToggle').querySelector('span').textContent='显示高级配置';
+  // switch to custom tab
+  $('billTypeTabs').querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
+  $('billTypeTabs').querySelector('[data-value="custom"]').classList.add('active');
+  $('customBillForm').style.display='block';
+  $('creditManualForm').style.display='none';
+}
+
+$('billTypeTabs').querySelectorAll('.type-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    $('billTypeTabs').querySelectorAll('.type-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    currentBillType=tab.dataset.value;
+    $('customBillForm').style.display=currentBillType==='custom'?'block':'none';
+    $('creditManualForm').style.display=currentBillType==='credit_manual'?'block':'none';
+  });
+});
+
+$('cbCycleRow').addEventListener('click',openCyclePicker);
+$('cycleCancel').addEventListener('click',closePickers);
+$('cycleConfirm').addEventListener('click',()=>{updateCycleDisplay();closePickers();});
+
+$('cyclePicker').addEventListener('click',e=>{if(e.target===$('cyclePicker'))closePickers();});
+
+$('cbAdvancedToggle').addEventListener('click',()=>{
+  const sec=$('cbAdvancedSection');
+  const shown=sec.classList.toggle('show');
+  $('cbAdvancedToggle').querySelector('span').textContent=shown?'隐藏高级配置':'显示高级配置';
+});
+
+// 推进已还清的周期性账单：保留原账单"已还清"条目，新建下一期账单
+function advanceRecurringBills(){
+  const data=getData();
+  let changed=false;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  const newBills=[];
+  data.bills.forEach(b=>{
+    if(b.type==='custom'&&b.cycle>0&&b.status==='paid'&&!b._advanced){
+      let due=new Date(b.dueDate);
+      due.setHours(0,0,0,0);
+      if(due<today){
+        // 计算下一期还款日（可能跨多期）
+        let nextDue=new Date(b.dueDate);
+        while(nextDue<=today){
+          nextDue.setMonth(nextDue.getMonth()+b.cycle);
+        }
+        // 新建下一期账单，原账单保持"已还清"
+        const nb=JSON.parse(JSON.stringify(b));
+        delete nb._advanced;
+        nb.id='b_'+Date.now()+'_'+Math.random().toString(36).substr(2,6);
+        nb.status='unpaid';
+        nb.paidAmount=0;
+        nb.dueDate=nextDue.toISOString().split('T')[0];
+        nb.createdAt=new Date().toISOString();
+        nb._replaces=b.id;
+        newBills.push(nb);
+        // 标记原账单已推进，避免重复处理
+        b._advanced=true;
+        changed=true;
+      }
+    }
+  });
+  if(newBills.length>0){
+    data.bills.push(...newBills);
+  }
+  if(changed)saveData('bills',data.bills);
+}
+
+$('saveBillBtn').addEventListener('click',()=>{
+  const data=getData();
+  if(currentBillType==='custom'){
+    const name=$('cbName').value.trim();
+    const amount=parseFloat($('cbAmount').value)||0;
+    const dueDate=$('cbDueDate').value;
+    if(!name){showToast('请输入账单名称');return;}
+    if(!amount){showToast('请输入每期金额');return;}
+    if(!dueDate){showToast('请选择还款日期');return;}
+    if(currentEditBillId){
+      // Edit existing bill
+      const bill=data.bills.find(b=>b.id===currentEditBillId);
+      if(!bill){showToast('账单未找到');return;}
+      bill.customName=name;
+      bill.bank=$('cbBank').value||'';
+      bill.amount=amount;
+      bill.dueDate=dueDate;
+      bill.cycle=currentCycle;
+      bill.holderName=$('cbHolder').value.trim();
+      bill.cardNo=$('cbCardNo').value.trim();
+      bill.note=$('cbNote').value.trim();
+      saveData('bills',data.bills);
+      currentEditBillId=null;
+      showToast('账单已更新');closePage();renderHome();
+    }else{
+      const bill={
+        id:uuid(),type:'custom',customName:name,
+        bank:$('cbBank').value||'',
+        amount,dueDate,cycle:currentCycle,
+        holderName:$('cbHolder').value.trim(),
+        cardNo:$('cbCardNo').value.trim(),
+        note:$('cbNote').value.trim(),
+        status:'unpaid',paidAmount:0,source:'manual',createdAt:new Date().toISOString()
+      };
+      data.bills.push(bill);saveData('bills',data.bills);
+      showToast('账单已保存');closePage();renderHome();
+    }
+  }else{
+    const bank=$('cmBank').value;
+    const cardNo=$('cmCardNo').value.trim().replace(/\s/g,'');
+    const dueDate=$('cmDueDate').value;
+    const amount=parseFloat($('cmAmount').value)||0;
+    const note=$('cmNote').value.trim();
+    if(!bank){showToast('请选择发卡银行');return;}
+    if(!cardNo){showToast('请输入银行卡号');return;}
+    if(!dueDate){showToast('请选择还款日');return;}
+    if(!amount){showToast('请输入还款金额');return;}
+    if(currentEditBillId){
+      // Edit existing bill
+      const bill=data.bills.find(b=>b.id===currentEditBillId);
+      if(!bill){showToast('账单未找到');return;}
+      bill.bank=bank;bill.cardNo=cardNo;bill.last4=cardNo.slice(-4);
+      bill.dueDate=dueDate;bill.amount=amount;bill.note=note;
+      saveData('bills',data.bills);
+      currentEditBillId=null;
+      showToast('账单已更新');closePage();renderHome();
+    }else{
+      const bill={
+        id:uuid(),type:'credit_manual',bank,cardNo,last4:cardNo.slice(-4),
+        dueDate,amount,note,
+        status:'unpaid',paidAmount:0,source:'manual',createdAt:new Date().toISOString()
+      };
+      data.bills.push(bill);saveData('bills',data.bills);
+      showToast('信用卡账单已保存');closePage();renderHome();
+    }
+  }
+});
+
+// ===================== Repay =====================
+function openRepay(billId){
+  currentBillId=billId;
+  const {bills}=getData();
+  const bill=bills.find(b=>b.id===billId);
+  if(!bill)return;
+  let title='还款确认';
+  if(bill.type==='custom')title=(bill.customName||'自定义账单')+' · 还款确认';
+  else if(bill.type==='credit_manual')title=(getBank(bill.bank).abbr+' '+bill.last4)+' · 还款确认';
+  else title=`${getBank(bill.bank).abbr} · 还款确认`;
+  $('repayModalTitle').textContent=title;
+  $('repayModal').classList.add('show');
+  $('partialAmount').value='';
+  document.querySelectorAll('.repay-option').forEach(o=>o.classList.remove('active'));
+  document.querySelector('.repay-option[data-value="full"]').classList.add('active');
+  document.querySelector('input[name="repayType"][value="full"]').checked=true;
+  $('partialAmountGroup').style.display='none';
+}
+
+$('repayModal').addEventListener('click',e=>{if(e.target===$('repayModal'))$('repayModal').classList.remove('show');});
+$('feeProgressModal').addEventListener('click',e=>{if(e.target===$('feeProgressModal'))$('feeProgressModal').classList.remove('show');});
+document.querySelectorAll('.repay-option').forEach(opt=>{
+  opt.addEventListener('click',()=>{
+    document.querySelectorAll('.repay-option').forEach(o=>o.classList.remove('active'));
+    opt.classList.add('active');opt.querySelector('input').checked=true;
+    $('partialAmountGroup').style.display=opt.dataset.value==='partial'?'block':'none';
+  });
+});
+$('cancelRepay').addEventListener('click',()=>$('repayModal').classList.remove('show'));
+$('confirmRepay').addEventListener('click',()=>{
+  const type=document.querySelector('input[name="repayType"]:checked').value;
+  const data=getData();
+  const bill=data.bills.find(b=>b.id===currentBillId);
+  if(!bill)return;
+  let msgName='';
+  if(bill.type==='custom')msgName=bill.customName||'自定义账单';
+  else if(bill.type==='credit_manual')msgName=(getBank(bill.bank).abbr+' '+bill.last4);
+  else msgName=`${getBank(bill.bank).abbr} ${bill.cardLast4}`;
+  if(type==='full'){
+    bill.status='paid';bill.paidAmount=bill.amount;
+    addMessage('还款确认',`${msgName} 账单已全额还清 ${fmtMoney(bill.amount)}`);
+  }else{
+    const amt=parseFloat($('partialAmount').value)||0;
+    if(amt<=0){showToast('请输入已还金额');return;}
+    bill.paidAmount=(bill.paidAmount||0)+amt;
+    if(bill.paidAmount>=bill.amount){bill.status='paid';}
+    else{bill.status='partial';}
+    addMessage('部分还款',`${msgName} 已还款 ${fmtMoney(amt)}，剩余 ${fmtMoney(Math.max(0,bill.amount-bill.paidAmount))}`);
+  }
+  saveData('bills',data.bills);
+  $('repayModal').classList.remove('show');
+  showToast('还款记录已更新');renderHome();
+});
+
+// ===================== Messages =====================
+function renderMessages(){
+  const {messages}=getData();
+  const list=$('messagesList');
+  if(messages.length===0){list.innerHTML='<div class="empty-state"><p>暂无消息</p><p style="font-size:12px;margin-top:4px">收到新账单或设置提醒时会在这里显示</p></div>';return;}
+  list.innerHTML=messages.map(m=>`<div class="msg-item ${m.read?'':'unread'}" data-id="${m.id}">
+    <div class="msg-title ${m.read?'':'unread'}">${m.title}</div>
+    <div class="msg-content">${m.content}</div>
+    <div class="msg-time">${fmtDateFull(m.date)}</div>
+  </div>`).join('');
+
+  list.querySelectorAll('.msg-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      const data=getData();
+      const m=data.messages.find(x=>x.id===item.dataset.id);
+      if(m&&!m.read){m.read=true;saveData('messages',data.messages);renderMessages();updateMsgBadge();}
+    });
+  });
+}
+
+$('clearAllMsg').addEventListener('click',()=>{
+  const data=getData();
+  data.messages.forEach(m=>m.read=true);
+  saveData('messages',data.messages);
+  renderMessages();updateMsgBadge();
+  showToast('已全部标记为已读');
+});
+
+// ===================== Annual Fee =====================
+function calcFeeProgress(c){
+  const today=new Date();today.setHours(0,0,0,0);
+  const fp=c.feeProgress||{};
+  let confirmed=false,progress=0,progressText='',statusHtml='',needsInput=false;
+
+  if(c.annualFeeType==='free'){
+    confirmed=true;progress=100;
+    progressText='已达标 · 终生免年费';
+    statusHtml='<div class="af-status ok">终生免年费，无需担心</div>';
+  }else if(c.annualFeeType==='required'){
+    confirmed=true;progress=0;
+    progressText='必缴 · 无法减免';
+    statusHtml='<div class="af-status no">必缴年费，无法减免</div>';
+  }else if(c.annualFeeType==='period'){
+    if(c.feeDeadline){
+      const dl=new Date(c.feeDeadline+'T00:00:00');
+      if(!isNaN(dl.getTime())){
+        if(today<=dl){
+          confirmed=true;progress=100;
+          progressText='限期内 · 免年费';
+          statusHtml='<div class="af-status ok">限时免年费期间</div>';
+        }else{
+          confirmed=true;progress=0;
+          progressText='已过期 · 需缴年费';
+          statusHtml='<div class="af-status no">限免已过期，需缴纳年费</div>';
+        }
+      }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">请确认限免截止日期</div>';}
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">请确认限免截止日期</div>';}
+  }else if(c.annualFeeType==='count'){
+    if(fp.confirmed&&c.feeCount>0){
+      confirmed=true;progress=Math.min(100,Math.round((fp.currentCount||0)/c.feeCount*100));
+      progressText=`已消费${fp.currentCount||0}次 / 需${c.feeCount}次`;
+      statusHtml=progress>=100?'<div class="af-status ok">已达标 · 免年费</div>':'<div class="af-status warn">按刷卡次数减免 · 请留意达标进度</div>';
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">按刷卡次数减免 · 请填写达标情况</div>';}
+  }else if(c.annualFeeType==='amount'){
+    if(fp.confirmed&&c.feeThreshold>0){
+      confirmed=true;progress=Math.min(100,Math.round((fp.currentAmount||0)/c.feeThreshold*100));
+      progressText=`已消费${fmtMoney(fp.currentAmount||0)} / 需${fmtMoney(c.feeThreshold)}`;
+      statusHtml=progress>=100?'<div class="af-status ok">已达标 · 免年费</div>':'<div class="af-status warn">按消费金额减免 · 请留意达标进度</div>';
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">按消费金额减免 · 请填写达标情况</div>';}
+  }else if(c.annualFeeType==='both'){
+    if(fp.confirmed&&c.feeBothCount>0&&c.feeBothThreshold>0){
+      confirmed=true;
+      const cp=Math.min(100,(fp.currentCount||0)/c.feeBothCount*100);
+      const ap=Math.min(100,(fp.currentAmount||0)/c.feeBothThreshold*100);
+      progress=Math.min(100,Math.round(Math.min(cp,ap)));
+      progressText=`次数${fp.currentCount||0}/${c.feeBothCount} · 金额${fmtMoney(fp.currentAmount||0)}/${fmtMoney(c.feeBothThreshold)}`;
+      statusHtml=progress>=100?'<div class="af-status ok">已达标 · 免年费</div>':'<div class="af-status warn">需同时满足次数和金额 · 请留意</div>';
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">需同时满足次数和金额 · 请填写达标情况</div>';}
+  }else if(c.annualFeeType==='points'){
+    if(fp.confirmed&&c.feePoints>0){
+      confirmed=true;progress=Math.min(100,Math.round((fp.currentPoints||0)/c.feePoints*100));
+      progressText=`已有${Number(fp.currentPoints||0).toLocaleString()}积分 / 需${Number(c.feePoints).toLocaleString()}积分`;
+      statusHtml=progress>=100?'<div class="af-status ok">积分充足 · 可兑换年费</div>':'<div class="af-status warn">需使用积分兑换，请关注积分余额</div>';
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">需使用积分兑换 · 请填写达标情况</div>';}
+  }else if(c.annualFeeType==='custom'){
+    if(fp.confirmed){
+      confirmed=true;progress=Math.min(100,Math.round(fp.customPercent||0));
+      progressText=`自定义 · 预估${progress}%`;
+      statusHtml=progress>=100?'<div class="af-status ok">已达标</div>':'<div class="af-status warn">自定义规则 · 请留意减免条件</div>';
+    }else{needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">自定义规则 · 请填写预估进度</div>';}
+  }else{
+    needsInput=true;progressText='请点击填写达标情况';statusHtml='<div class="af-status warn">未知规则 · 请填写达标情况</div>';
+  }
+  return{confirmed,progress,progressText,statusHtml,needsInput};
+}
+
+function renderAnnualFee(){
+  const {cards}=getData();
+  const list=$('annualFeeList');
+  if(cards.length===0){list.innerHTML='<div class="empty-state"><p>暂无卡片</p><div style="margin-top:14px"><button class="btn btn-primary" style="font-size:13px;padding:7px 14px" onclick="$(\'addCardBtn\').click()">+ 录入卡片</button></div></div>';return;}
+
+  const items=cards.map(c=>{
+    const bank=getBank(c.bank);
+    const ft=FEE_TYPES.find(f=>f.value===c.annualFeeType);
+    const prog=calcFeeProgress(c);
+    return{card:c,bank,ft,prog};
+  });
+
+  // Split into confirmed and unconfirmed
+  const confirmed=items.filter(i=>i.prog.confirmed);
+  const unconfirmed=items.filter(i=>!i.prog.confirmed);
+
+  // Sort confirmed: lower progress first, but lifetime free (type==='free') goes to end
+  confirmed.sort((a,b)=>{
+    const aFree=a.card.annualFeeType==='free'?1:0;
+    const bFree=b.card.annualFeeType==='free'?1:0;
+    if(aFree!==bFree)return aFree-bFree;
+    return a.prog.progress-b.prog.progress;
+  });
+
+  function renderItem(item){
+    const c=item.card;
+    const p=item.prog;
+    const barClass=p.confirmed?'':'unconfirmed';
+    const pctText=p.confirmed?`${p.progress}%`:'';
+
+    let ruleDesc=item.ft?.label||c.annualFeeType;
+    if(c.annualFeeType==='points'&&c.feePoints)ruleDesc+=` · ${Number(c.feePoints).toLocaleString()}积分兑换`;
+    if(c.annualFeeType==='amount'&&c.feeThreshold)ruleDesc+=` · 消费满${fmtMoney(c.feeThreshold)}`;
+    if(c.annualFeeType==='count'&&c.feeCount)ruleDesc+=` · 刷满${c.feeCount}次/年`;
+    if(c.annualFeeType==='both')ruleDesc+=` · 刷满${c.feeBothCount||'--'}次且消费满${c.feeBothThreshold?fmtMoney(c.feeBothThreshold):'--'}`;
+    if(c.annualFeeType==='period'&&c.feeDeadline)ruleDesc+=` · 截止${c.feeDeadline}`;
+    if(c.annualFeeType==='custom'&&c.feeCustomRule)ruleDesc+=` · ${c.feeCustomRule}`;
+
+    return`<div class="af-card" data-card-id="${c.id}">
+      <div class="af-header">
+        <div class="af-bank-logo" style="background:${item.bank.color}">${item.bank.abbr[0]}</div>
+        <div>
+          <div class="af-bank-name">${item.bank.name} <span style="font-size:11px;color:var(--text3)">[${c.last4}]</span>${c.holderName?` <span style="font-size:11px;color:var(--text3)">${c.holderName}</span>`:''}</div>
+        </div>
+      </div>
+      <div class="af-rule">${ruleDesc}${c.annualFeeAmount?` · 年费${fmtMoney(c.annualFeeAmount)}`:''}${c.annualFeeDate?` · ${c.annualFeeDate}`:''}</div>
+      <div class="af-progress-bg"><div class="af-progress-bar ${barClass}" style="width:${p.confirmed?p.progress:100}%"></div></div>
+      <div class="af-progress-text"><span>${p.progressText}</span><span>${pctText}</span></div>
+      ${p.statusHtml}
+    </div>`;
+  }
+
+  let html='';
+  if(confirmed.length>0){
+    html+=confirmed.map(renderItem).join('');
+  }
+  if(unconfirmed.length>0){
+    if(confirmed.length>0){
+      html+=`<div class="af-section-title">待确认达标情况</div>`;
+    }
+    html+=unconfirmed.map(renderItem).join('');
+  }
+  list.innerHTML=html;
+
+  list.querySelectorAll('.af-card').forEach(card=>{
+    card.addEventListener('click',()=>openFeeProgressModal(card.dataset.cardId));
+  });
+}
+
+function openFeeProgressModal(cardId){
+  const {cards}=getData();
+  const card=cards.find(c=>c.id===cardId);
+  if(!card)return;
+  currentFeeProgressCardId=cardId;
+  const bank=getBank(card.bank);
+  const fp=card.feeProgress||{};
+  $('feeProgressTitle').textContent=`${bank.name} · 年费达标情况`;
+
+  let bodyHtml='';
+  const t=card.annualFeeType;
+  if(t==='free'){
+    bodyHtml='<p style="font-size:14px;color:var(--text2);line-height:1.6">终生免年费，无需填写。</p>';
+  }else if(t==='required'){
+    bodyHtml='<p style="font-size:14px;color:var(--text2);line-height:1.6">必缴年费，无法减免。</p>';
+  }else if(t==='period'){
+    const dl=card.feeDeadline?new Date(card.feeDeadline+'T00:00:00'):null;
+    if(dl&&!isNaN(dl.getTime())){
+      const today=new Date();today.setHours(0,0,0,0);
+      if(today<=dl){
+        bodyHtml='<p style="font-size:14px;color:var(--text2);line-height:1.6">当前在限免期内，享受免年费。<br>截止日期：'+card.feeDeadline+'</p>';
+      }else{
+        bodyHtml='<p style="font-size:14px;color:var(--red);line-height:1.6">限免已过期，需缴纳年费。<br>截止日期：'+card.feeDeadline+'</p>';
+      }
+    }else{
+      bodyHtml='<p style="font-size:14px;color:var(--text2);line-height:1.6">请在卡片编辑中补充限免截止日期。</p>';
+    }
+  }else if(t==='count'){
+    bodyHtml=`<p style="font-size:13px;color:var(--text3);margin-bottom:8px">需刷满 <b>${card.feeCount||0}</b> 次/年可免年费</p>
+      <label style="font-size:13px;color:var(--text2)">已消费次数</label>
+      <input type="number" class="fee-input" id="fpCountInput" placeholder="输入已消费次数" value="${fp.currentCount||''}" min="0">`;
+  }else if(t==='amount'){
+    bodyHtml=`<p style="font-size:13px;color:var(--text3);margin-bottom:8px">需消费满 <b>${fmtMoney(card.feeThreshold||0)}</b> 可免年费</p>
+      <label style="font-size:13px;color:var(--text2)">已消费金额（元）</label>
+      <input type="number" class="fee-input" id="fpAmountInput" placeholder="输入已消费金额" value="${fp.currentAmount||''}" min="0">`;
+  }else if(t==='both'){
+    bodyHtml=`<p style="font-size:13px;color:var(--text3);margin-bottom:8px">需同时满足：刷满 <b>${card.feeBothCount||0}</b> 次 且 消费满 <b>${fmtMoney(card.feeBothThreshold||0)}</b></p>
+      <label style="font-size:13px;color:var(--text2)">已消费次数</label>
+      <input type="number" class="fee-input" id="fpBothCountInput" placeholder="输入已消费次数" value="${fp.currentCount||''}" min="0">
+      <label style="font-size:13px;color:var(--text2);margin-top:12px;display:block">已消费金额（元）</label>
+      <input type="number" class="fee-input" id="fpBothAmountInput" placeholder="输入已消费金额" value="${fp.currentAmount||''}" min="0">`;
+  }else if(t==='points'){
+    bodyHtml=`<p style="font-size:13px;color:var(--text3);margin-bottom:8px">需 <b>${Number(card.feePoints||0).toLocaleString()}</b> 积分兑换年费</p>
+      <label style="font-size:13px;color:var(--text2)">已有积分</label>
+      <input type="number" class="fee-input" id="fpPointsInput" placeholder="输入已有积分" value="${fp.currentPoints||''}" min="0">`;
+  }else if(t==='custom'){
+    bodyHtml=`<p style="font-size:13px;color:var(--text3);margin-bottom:8px">自定义规则：${card.feeCustomRule||'无'}</p>
+      <label style="font-size:13px;color:var(--text2)">预估完成百分比（0-100）</label>
+      <input type="number" class="fee-input" id="fpCustomInput" placeholder="例如：60" value="${fp.customPercent||''}" min="0" max="100">`;
+  }else{
+    bodyHtml='<p style="font-size:14px;color:var(--text2);line-height:1.6">未知年费类型，请先编辑卡片补充年费信息。</p>';
+  }
+  $('feeProgressBody').innerHTML=bodyHtml;
+  $('feeProgressModal').classList.add('show');
+}
+
+// ===================== Settings =====================
+function loadSettings(){
+  const {settings}=getData();
+  $('settingEmail').value=settings.email||'';
+  $('settingAuthCode').value=settings.authCode||'';
+  updateSyncStatus();
+}
+
+function updateSyncStatus(){
+  const label=$('syncStatusLabel');
+  const desc=$('syncStatusDesc');
+  const badge=$('syncStatusBadge');
+  if(!label)return;
+  if(backendAvailable){
+    label.textContent='微服务同步';
+    desc.textContent='数据已同步到本地服务端';
+    badge.textContent='在线';
+    badge.style.background='var(--green)';
+  }else{
+    label.textContent='本地模式';
+    desc.textContent='数据仅保存在浏览器中';
+    badge.textContent='离线';
+    badge.style.background='var(--text3)';
+  }
+}
+
+$('manualSyncBtn').addEventListener('click',async()=>{
+  showLoading();
+  await checkBackend();
+  if(backendAvailable){
+    await syncToBackend();
+    showToast('同步成功');
+  }else{
+    showToast('本地服务端未运行，请先启动服务');
+  }
+  hideLoading();
+});
+
+$('saveSettingsBtn').addEventListener('click',()=>{
+  const oldSettings=(getData()&&getData().settings)||{};
+  const settings={
+    ...oldSettings,
+    email:$('settingEmail').value.trim(),
+    authCode:$('settingAuthCode').value.trim()
+  };
+  saveData('settings',settings);
+  showToast('设置已保存');
+});
+
+$('showEmailHelpBtn').addEventListener('click',()=>{
+  const panel=$('emailHelpPanel');
+  panel.style.display=panel.style.display==='none'?'block':'none';
+  $('showEmailHelpBtn').textContent=panel.style.display==='none'?'如何获取授权码':'收起教程';
+});
+
+// 折叠面板
+document.querySelectorAll('.fold-header').forEach(header=>{
+  header.addEventListener('click',()=>{
+    const fold=header.dataset.fold;
+    const body=$(`fold-${fold}`);
+    if(!body)return;
+    const isOpen=body.style.display!=='none';
+    body.style.display=isOpen?'none':'block';
+    header.classList.toggle('open',!isOpen);
+  });
+});
+
+$('testEmailBtn').addEventListener('click',async()=>{
+  const email=$('settingEmail').value.trim();
+  const auth=$('settingAuthCode').value.trim();
+  if(!email||!auth){showConfirmDialog('提示','请先填写邮箱账号和授权码','知道了','var(--primary)',function(){});return;}
+  showLoading();
+  try{
+    // 先保存配置到后端
+    const saveR=await fetch(API_BASE+'/api/config',{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,authCode:auth})});
+    if(!saveR.ok)throw new Error('保存配置失败');
+    // 轻量邮箱连通性测试（仅登录验证，不拉邮件/解析，8 秒超时，避免长期转圈）
+    const testR=await fetch(API_BASE+'/api/email-test',{method:'POST',mode:'cors',signal:AbortSignal.timeout(8000)});
+    const testResult=await testR.json();
+    if(testResult.status==='ok'){
+      showToast('邮箱连接成功！');
+    }else if(testResult.message&&testResult.message.includes('配置不完整')){
+      showToast('配置已保存，但服务端未读取到配置');
+    }else{
+      showToast('连接结果：'+testResult.message);
+    }
+  }catch(e){
+    if(e.name==='TimeoutError'){showToast('测试超时：邮箱连接较慢，请稍后重试');}
+    else{showToast('测试失败：'+e.message);}
+  }finally{
+    hideLoading();
+  }
+});
+
+$('exportData').addEventListener('click',()=>{
+  const data={cards:lsGet(STORAGE_KEYS.cards),bills:lsGet(STORAGE_KEYS.bills),messages:lsGet(STORAGE_KEYS.messages),settings:lsGet(STORAGE_KEYS.settings),lastRefresh:lsGet(STORAGE_KEYS.lastRefresh)};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='zhikaka_backup_'+todayStr()+'.json';a.click();URL.revokeObjectURL(url);
+  showToast('数据已导出');
+});
+
+$('importData').addEventListener('click',()=>$('importFileInput').click());
+$('importFileInput').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    let data;
+    try{
+      data=JSON.parse(ev.target.result);
+    }catch{showToast('文件格式错误');return;}
+    const cards=(data.cards||[]).length;
+    const bills=(data.bills||[]).length;
+    const messages=(data.messages||[]).length;
+    const desc=`将导入：${cards} 张卡片 / ${bills} 笔账单 / ${messages} 条消息。\n\n继续将覆盖现有数据，是否导入？`;
+    showConfirmDialog('确认导入数据？',desc,'确认导入','var(--primary)',function(){
+      if(data.cards)saveData('cards',data.cards);
+      if(data.bills)saveData('bills',data.bills);
+      if(data.messages)saveData('messages',data.messages);
+      if(data.settings)saveData('settings',data.settings);
+      if(data.lastRefresh)saveData('lastRefresh',data.lastRefresh);
+      showToast('数据已导入');renderHome();
+    });
+  };
+  reader.readAsText(file);
+  $('importFileInput').value='';
+});
+
+$('clearData').addEventListener('click',()=>$('clearModal').classList.add('show'));
+$('cancelClear').addEventListener('click',()=>$('clearModal').classList.remove('show'));
+$('confirmClear').addEventListener('click',()=>{
+  Object.values(STORAGE_KEYS).forEach(k=>localStorage.removeItem(k));
+  syncToBackend();
+  $('clearModal').classList.remove('show');
+  showToast('所有数据已清除');
+  renderHome();renderWallet();renderMessages();renderAnnualFee();updateMsgBadge();
+});
+
+// Delete card modal
+$('cancelDeleteCard').addEventListener('click',()=>$('deleteCardModal').classList.remove('show'));
+$('confirmDeleteCard').addEventListener('click',()=>{
+  if(!pendingDeleteCardId)return;
+  const data=getData();
+  data.cards=data.cards.filter(c=>c.id!==pendingDeleteCardId);
+  data.bills.forEach(b=>{if(b.cardId===pendingDeleteCardId){b.cardId=null;b.type='custom';}});
+  saveData('cards',data.cards);saveData('bills',data.bills);
+  $('deleteCardModal').classList.remove('show');
+  showToast('已删除');closePage();renderHome();renderWallet();
+  pendingDeleteCardId=null;
+});
+
+// Fee progress modal
+$('cancelFeeProgress').addEventListener('click',()=>$('feeProgressModal').classList.remove('show'));
+$('saveFeeProgress').addEventListener('click',()=>{
+  if(!currentFeeProgressCardId)return;
+  const data=getData();
+  const card=data.cards.find(c=>c.id===currentFeeProgressCardId);
+  if(!card)return;
+  if(!card.feeProgress)card.feeProgress={};
+  const fp=card.feeProgress;
+  const t=card.annualFeeType;
+
+  if(t==='count'){
+    const v=parseInt($('fpCountInput')?.value)||0;
+    if(v<0){showToast('次数不能为负数');return;}
+    fp.confirmed=true;fp.currentCount=v;
+  }else if(t==='amount'){
+    const v=parseFloat($('fpAmountInput')?.value)||0;
+    if(v<0){showToast('金额不能为负数');return;}
+    fp.confirmed=true;fp.currentAmount=v;
+  }else if(t==='both'){
+    const cv=parseInt($('fpBothCountInput')?.value)||0;
+    const av=parseFloat($('fpBothAmountInput')?.value)||0;
+    if(cv<0||av<0){showToast('数值不能为负数');return;}
+    fp.confirmed=true;fp.currentCount=cv;fp.currentAmount=av;
+  }else if(t==='points'){
+    const v=parseInt($('fpPointsInput')?.value)||0;
+    if(v<0){showToast('积分不能为负数');return;}
+    fp.confirmed=true;fp.currentPoints=v;
+  }else if(t==='custom'){
+    const v=parseInt($('fpCustomInput')?.value)||0;
+    if(v<0||v>100){showToast('百分比需在0-100之间');return;}
+    fp.confirmed=true;fp.customPercent=v;
+  }else if(t==='free'||t==='required'||t==='period'){
+    // auto-confirmed types, no user input needed
+  }
+
+  saveData('cards',data.cards);
+  $('feeProgressModal').classList.remove('show');
+  showToast('已保存');renderAnnualFee();
+  currentFeeProgressCardId=null;
+});
+
+// ===================== Top Buttons =====================
+$('btnRefresh').addEventListener('click',async()=>{
+  showLoading(['正在连接邮箱…','正在拉取邮件列表…','正在解析账单金额…','首次连接约需 5-15 秒，请稍候…']);
+  try{
+    const r=await fetch(API_BASE+'/api/refresh',{method:'POST',mode:'cors'});
+    const result=await r.json();
+    if(result.status==='ok'){
+      saveData('lastRefresh',new Date().toISOString());
+      // 将解析到的账单合并到本地 bills
+      const data=getData();
+      let added=0;
+      for(const bill of result.bills||[]){
+        if(!bill.parse_ok||bill.amount_due===null)continue;
+        // 尝试匹配卡包中的卡片
+        const card=data.cards.find(c=>c.bank===bill.bank);
+        // 优先用卡片还款规则计算本账期真实到期日（修复：之前 dueDate 被写死"今天+15天"，导致 6 家全是 09-20）
+        let due=null;
+        if(card&&card.repayType&&card.billDay){
+          try{
+            const info=getLatestBillInfo(card,new Date());
+            due=info.ambiguous?info.prevRepayDate:info.repayDate;
+          }catch(e){due=null;}
+        }
+        if(!due){due=new Date();due.setDate(due.getDate()+15);} // 无卡片规则才回退 +15 天（估算）
+        const dueStr=fmtDateStr(due);
+        // 已有同银行 email 账单：更新其金额+到期日到最新解析结果（旧数据被写死 +15 天，且金额不更新是 bug）
+        const existing=data.bills.find(b=>b.type==='credit'&&b.bank===bill.bank&&b.source==='email');
+        if(existing){
+          existing.dueDate=dueStr;
+          existing.amount=bill.amount_due;                 // 修复：金额也要更新（之前只改日期导致金额残留旧值）
+                    // 不自动改变还款状态：用户手动确认还款后才变为 paid，刷新只更新金额和到期日
+          existing.cardLast4=bill.card_last4||existing.cardLast4||'****';
+          continue;
+        }
+        data.bills.push({
+          id:uuid(),type:'credit',cardId:card?card.id:null,cardLast4:bill.card_last4||card?.last4||'****',
+          bank:bill.bank,customName:'',amount:bill.amount_due,
+          dueDate:dueStr,status:'unpaid',paidAmount:0,
+          source:'email',createdAt:new Date().toISOString()
+        });
+        added++;
+        addMessage('新账单提醒',`${getBank(bill.bank).abbr} 有新的账单 ¥${bill.amount_due.toFixed(2)}，请查看`);
+      }
+      saveData('bills',data.bills);
+      showToast(`刷新完成，新增 ${added} 笔账单`);
+      renderHome();
+    }else{
+      showToast(result.message||'刷新失败');
+    }
+  }catch(e){
+    console.error('后端连接失败',e);
+    showToast('无法连接到本地服务，请先启动 知卡卡账单 服务');
+  }finally{
+    hideLoading();
+  }
+});
+
+$('btnMessages').addEventListener('click',()=>{renderMessages();openPage('messagesPage');});
+$('btnWallet').addEventListener('click',()=>{renderWallet();openPage('walletPage');});
+$('btnAnnual').addEventListener('click',()=>{renderAnnualFee();openPage('annualFeePage');});
+function editBill(billId){
+  const {bills}=getData();
+  const bill=bills.find(b=>b.id===billId);
+  if(!bill)return;
+  currentEditBillId=billId;
+  $('billFormTitle').textContent='编辑账单';
+  if(bill.type==='custom'){
+    // Switch to custom tab
+    $('billTypeTabs').querySelectorAll('.type-tab').forEach(t=>t.classList.toggle('active',t.dataset.value==='custom'));
+    currentBillType='custom';
+    $('customBillForm').style.display='block';
+    $('creditManualForm').style.display='none';
+    // Fill custom form
+    $('cbName').value=bill.customName||'';
+    $('cbBank').value=bill.bank||'';
+    $('cbAmount').value=bill.amount||'';
+    $('cbDueDate').value=bill.dueDate||'';
+    currentCycle=bill.cycle??1;
+    updateCycleDisplay();
+    $('cbHolder').value=bill.holderName||'';
+    $('cbCardNo').value=bill.cardNo||'';
+    $('cbNote').value=bill.note||'';
+    // Show advanced section if any advanced field has value
+    if(bill.bank||bill.holderName||bill.cardNo||bill.note){
+      $('cbAdvancedSection').classList.add('show');
+      $('cbAdvancedToggle').querySelector('span').textContent='隐藏高级配置';
+    }else{
+      $('cbAdvancedSection').classList.remove('show');
+      $('cbAdvancedToggle').querySelector('span').textContent='显示高级配置';
+    }
+  }else if(bill.type==='credit_manual'){
+    // Switch to credit_manual tab
+    $('billTypeTabs').querySelectorAll('.type-tab').forEach(t=>t.classList.toggle('active',t.dataset.value==='credit_manual'));
+    currentBillType='credit_manual';
+    $('customBillForm').style.display='none';
+    $('creditManualForm').style.display='block';
+    // Fill credit_manual form
+    $('cmBank').value=bill.bank||'';
+    $('cmCardNo').value=bill.cardNo||'';
+    $('cmDueDate').value=bill.dueDate||'';
+    $('cmAmount').value=bill.amount||'';
+    $('cmNote').value=bill.note||'';
+  }
+  openPage('manualBillPage');
+}
+
+$('btnManualBill').addEventListener('click',()=>{resetBillForm();openPage('manualBillPage');});
+$('btnSettings').addEventListener('click',()=>{loadSettings();openPage('settingsPage');});
+
+$('summaryDue').addEventListener('click',()=>{renderDueDetail();openPage('dueDetailPage');});
+$('summaryFree').addEventListener('click',()=>{renderFreeDetail();openPage('freeDetailPage');});
+$('summaryRepay').addEventListener('click',()=>{renderRepayDaysDetail();openPage('repayDaysPage');});
+
+// ===================== Bill List Actions =====================
+$('billList').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-action]');
+  if(!btn)return;
+  const action=btn.dataset.action;
+  const id=btn.dataset.id;
+  if(action==='repay'){openRepay(id);}
+  else if(action==='unpay'){
+    showConfirmDialog('撤销还款？','确认撤销此账单的还款状态？','撤销','var(--orange)',function(){
+      const data=getData();
+      const b=data.bills.find(x=>x.id===id);
+      if(b){
+        b.status='unpaid';b.paidAmount=0;
+        // 如果是已推进的周期账单，撤销时删除推进生成的新账单
+        if(b._advanced){
+          data.bills=data.bills.filter(x=>x._replaces!==b.id);
+          delete b._advanced;
+        }
+        saveData('bills',data.bills);renderHome();
+      }
+    });
+  }
+});
+
+// ===================== Init =====================
+bindConfirmDialog();
+initCardForm();
+renderHome();
+updateMsgBadge();
+
+// 首屏引导提示：首次使用 / 空数据时显示，用户关闭后不再重复
+const dismissedOnboarding=lsGet('zhikaka_onboarding_dismissed');
+if(!dismissedOnboarding){
+  const {cards:obCards,bills:obBills}=getData();
+  if(obCards.length===0&&obBills.filter(b=>b.status!=='paid').length===0){
+    $('onboardingHint').style.display='block';
+  }
+}
+$('onboardingClose').addEventListener('click',()=>{
+  lsSet('zhikaka_onboarding_dismissed',true);
+  $('onboardingHint').style.display='none';
+});
+
+// 检查后端微服务是否在线（非阻塞）
+checkBackend().then(()=>{
+  if(backendAvailable){
+    syncFromBackend().then(()=>{
+      renderHome();renderWallet();renderMessages();renderAnnualFee();
+    });
+  }
+});
+
+// Check remind on load
+const {settings}=getData();
+if(settings.remindOn!==false){
+  const now=new Date();
+  const [rh,rm]=(settings.remindTime||'09:00').split(':');
+  if(now.getHours()==parseInt(rh)&&Math.abs(now.getMinutes()-parseInt(rm))<=5){
+    showToast('知卡卡账单 提醒您：该查看信用卡账单了！');
+  }
+}
+</script>
+</body>
+</html>
